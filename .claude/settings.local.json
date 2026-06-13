@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(dir \"E:\\\\Projects\\\\HotelOpt\" /s /ad /b)"
+    ]
+  }
+}
