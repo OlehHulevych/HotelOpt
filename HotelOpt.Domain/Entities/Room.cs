@@ -1,0 +1,32 @@
+﻿using HotelOpt.Domain.Common;
+using HotelOpt.Domain.Enums;
+
+namespace HotelOpt.Domain.Entities;
+
+public class Room:BaseEntity
+{
+    public string RoomNumber { get; private set; }
+    public string Description { get; private set; }
+    public Guid PropertyId { get; private set; }
+    public Property Property { get; private set; }
+    public RoomStatus Status { get; private set; }
+    public RoomType Type { get; private set; }
+
+    private Room()
+    {
+        RoomNumber = null!;
+        Description = null!;
+        Property = null!;
+        Type = RoomType.Single;
+    }
+
+    public Room(string roomNumber, string description, Guid propertyId, RoomType type)
+    {
+        RoomNumber = roomNumber;
+        Description = description;
+        PropertyId = propertyId;
+        Type = type;
+        Status = RoomStatus.Cleaning;
+    }
+    
+}
