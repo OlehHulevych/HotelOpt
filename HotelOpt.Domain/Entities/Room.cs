@@ -11,6 +11,9 @@ public class Room:BaseEntity
     public Property Property { get; private set; }
     public RoomStatus Status { get; private set; }
     public RoomType Type { get; private set; }
+    
+    public Guid TenantId { get; private set; }
+    public Tenant Tenant { get; private set; }
 
     private Room()
     {
@@ -18,15 +21,17 @@ public class Room:BaseEntity
         Description = null!;
         Property = null!;
         Type = RoomType.Single;
+        Tenant = null!;
     }
 
-    public Room(string roomNumber, string description, Guid propertyId, RoomType type)
+    public Room(string roomNumber, string description, Guid propertyId, RoomType type, Guid tenantId)
     {
         RoomNumber = roomNumber;
         Description = description;
         PropertyId = propertyId;
         Type = type;
         Status = RoomStatus.Cleaning;
+        TenantId = tenantId;
     }
     
 }

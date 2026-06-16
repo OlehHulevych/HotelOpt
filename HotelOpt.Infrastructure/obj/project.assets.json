@@ -135,6 +135,38 @@
           }
         }
       },
+      "Microsoft.AspNetCore.Http.Abstractions/2.3.11": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.AspNetCore.Http.Features": "2.3.10"
+        },
+        "compile": {
+          "lib/netstandard2.0/Microsoft.AspNetCore.Http.Abstractions.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/netstandard2.0/Microsoft.AspNetCore.Http.Abstractions.dll": {
+            "related": ".xml"
+          }
+        }
+      },
+      "Microsoft.AspNetCore.Http.Features/2.3.10": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.Extensions.Primitives": "8.0.0"
+        },
+        "compile": {
+          "lib/netstandard2.0/Microsoft.AspNetCore.Http.Features.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/netstandard2.0/Microsoft.AspNetCore.Http.Features.dll": {
+            "related": ".xml"
+          }
+        }
+      },
       "Microsoft.AspNetCore.Identity.EntityFrameworkCore/10.0.9": {
         "type": "package",
         "dependencies": {
@@ -1425,6 +1457,32 @@
         "lib/netstandard2.0/Microsoft.AspNetCore.Cryptography.KeyDerivation.xml",
         "microsoft.aspnetcore.cryptography.keyderivation.10.0.9.nupkg.sha512",
         "microsoft.aspnetcore.cryptography.keyderivation.nuspec"
+      ]
+    },
+    "Microsoft.AspNetCore.Http.Abstractions/2.3.11": {
+      "sha512": "sNpm9t4l5Axt5qMzfD9pYVm7dWHys12TtIbtQ2VVMfKN8eCJiqtZX8ZhC1mhttWOfCuNOMtd+Hh+HoA7VLyoqw==",
+      "type": "package",
+      "path": "microsoft.aspnetcore.http.abstractions/2.3.11",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "lib/netstandard2.0/Microsoft.AspNetCore.Http.Abstractions.dll",
+        "lib/netstandard2.0/Microsoft.AspNetCore.Http.Abstractions.xml",
+        "microsoft.aspnetcore.http.abstractions.2.3.11.nupkg.sha512",
+        "microsoft.aspnetcore.http.abstractions.nuspec"
+      ]
+    },
+    "Microsoft.AspNetCore.Http.Features/2.3.10": {
+      "sha512": "AktSafL1PkmbIoG0nx7van7bcvEvxnS4WBrIDaKvNr3uBxEj3epgT3DLbxIT1IjZKrubaV1xasXASdyaKSJlMA==",
+      "type": "package",
+      "path": "microsoft.aspnetcore.http.features/2.3.10",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "lib/netstandard2.0/Microsoft.AspNetCore.Http.Features.dll",
+        "lib/netstandard2.0/Microsoft.AspNetCore.Http.Features.xml",
+        "microsoft.aspnetcore.http.features.2.3.10.nupkg.sha512",
+        "microsoft.aspnetcore.http.features.nuspec"
       ]
     },
     "Microsoft.AspNetCore.Identity.EntityFrameworkCore/10.0.9": {
@@ -3650,6 +3708,7 @@
       "Hangfire.Core >= 1.8.23",
       "HotelOpt.Application >= 1.0.0",
       "HotelOpt.Domain >= 1.0.0",
+      "Microsoft.AspNetCore.Http.Abstractions >= 2.3.11",
       "Microsoft.AspNetCore.Identity.EntityFrameworkCore >= 10.0.9",
       "Microsoft.EntityFrameworkCore >= 10.0.9",
       "Microsoft.EntityFrameworkCore.Tools >= 10.0.9",
@@ -3710,6 +3769,10 @@
           "Hangfire.Core": {
             "target": "Package",
             "version": "[1.8.23, )"
+          },
+          "Microsoft.AspNetCore.Http.Abstractions": {
+            "target": "Package",
+            "version": "[2.3.11, )"
           },
           "Microsoft.AspNetCore.Identity.EntityFrameworkCore": {
             "target": "Package",

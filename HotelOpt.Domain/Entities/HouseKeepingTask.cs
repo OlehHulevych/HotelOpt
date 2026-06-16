@@ -14,6 +14,8 @@ public class HouseKeepingTask:BaseEntity
     public HouseKeepingTaskStatus Status { get; private set; }
     public DateTimeOffset ScheduledAt { get; private set; }
     public DateTimeOffset? CompletedAt { get; private set; }
+    public Guid TenantId { get; private set; }
+    public Tenant Tenant { get; private set; }
 
     private HouseKeepingTask()
     {
@@ -22,9 +24,10 @@ public class HouseKeepingTask:BaseEntity
         AssignedToId = Guid.Empty;
         Room = null!;
         ScheduledAt = DateTimeOffset.UtcNow;
+        Tenant = null!;
     }
 
-    public HouseKeepingTask(string title, Guid assignedById, Guid assignedToId, Guid roomId, DateTimeOffset scheduledAt)
+    public HouseKeepingTask(string title, Guid assignedById, Guid assignedToId, Guid roomId, DateTimeOffset scheduledAt, Guid tenantId)
     {
         Title = title;
         AssignedById = assignedById;
@@ -32,6 +35,7 @@ public class HouseKeepingTask:BaseEntity
         RoomId = roomId;
         Status = HouseKeepingTaskStatus.Pending;
         ScheduledAt = scheduledAt;
+        TenantId = tenantId;
 
     }
 
