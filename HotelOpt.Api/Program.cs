@@ -1,11 +1,16 @@
+using HotelOpt.Infrastructure;
 using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
-
+builder.Services.AddInfrastructure(builder.Configuration);
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", p=>p.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+});
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 
 
 app.UseHttpsRedirection();
@@ -14,16 +19,17 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 
+
 async Task EnsureRolesAsync(WebApplication application)
 {
     try
     {
         using var scope = application.Services.CreateScope();
-        var roleManger = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-        string[] roles = { "OWNER", "Manager", "Staff" };
+        var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole<Guid>>>();
+        string[] roles = { "Owner", "Manager", "Staff" };
         foreach (var role in roles)
         {
-            if (!await roleManger.RoleExistsAsync(role)) await roleManger.CreateAsync(new IdentityRole(role));
+            if (!await roleManager.RoleExistsAsync(role)) await roleManager.CreateAsync(new IdentityRole<Guid>(role));
         }
     }
     catch (Exception ex)
@@ -32,6 +38,9 @@ async Task EnsureRolesAsync(WebApplication application)
         logger.LogError(ex, "Failed to seed roles");
     }
 }
+
+await EnsureRolesAsync(app);
+app.Run();
 
 
 
