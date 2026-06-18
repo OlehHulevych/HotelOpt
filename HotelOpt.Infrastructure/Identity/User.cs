@@ -6,6 +6,9 @@ namespace HotelOpt.Infrastructure.Identity;
 
 public class User : IdentityUser<Guid>
 {
+    public string FirstName { get; private set; }
+    public string LastName { get; private set; }
+    public string Email { get; private set; }
     public Guid TenantId { get; private set; }
     public Tenant Tenant { get; private set; }
     public DateTimeOffset CreatedAt { get; private set; }
@@ -21,11 +24,14 @@ public class User : IdentityUser<Guid>
 
     }
 
-    public User(Guid tenantId, UserRole role)
+    public User(string firstName, string lastName, string email, Guid tenantId, UserRole role)
     {
+        FirstName = firstName;
+        LastName = lastName;
         TenantId = tenantId;
         Role = role;
         Tenant = null!;
+        Email = email;
         CreatedAt = DateTimeOffset.UtcNow;
         UpdatedAt = DateTimeOffset.UtcNow;
     }

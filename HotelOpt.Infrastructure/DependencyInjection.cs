@@ -17,7 +17,7 @@
          services.AddScoped<ICurrentTenantService, CurrentTenantService>();
          services.AddIdentityCore<User>().AddRoles<IdentityRole<Guid>>().AddEntityFrameworkStores<AppDbContext>();
          services.AddTransient<ITokenService, TokenService>();
-         
+         services.AddScoped<IIdentityService, IdentityService>();
          return services;
      }
  }
