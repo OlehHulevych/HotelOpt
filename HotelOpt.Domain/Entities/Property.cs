@@ -31,5 +31,13 @@ public class Property:BaseEntity
         Address = address;
         TenantId = tenantId;
     }
+    public void Update(string? name, string? contactEmail, string? phoneNumber, int? starRating, string? address)
+    {
+        Name = name ?? Name;
+        ContactEmail = contactEmail ?? ContactEmail;
+        PhoneNumber = phoneNumber ?? PhoneNumber;
+        StarRating = starRating ?? StarRating;
+        Address = address ?? Address;
+    }
     
 }
