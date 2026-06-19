@@ -1,5 +1,6 @@
 ﻿using HotelOpt.Infrastructure.Data;
  using HotelOpt.Infrastructure.Identity;
+ using HotelOpt.Infrastructure.Repositories;
  using HotelOpt.Infrastructure.Services;
  using HoteOpt.Application.Interfaces;
  using Microsoft.AspNetCore.Identity;
@@ -18,6 +19,7 @@
          services.AddIdentityCore<User>().AddRoles<IdentityRole<Guid>>().AddEntityFrameworkStores<AppDbContext>();
          services.AddTransient<ITokenService, TokenService>();
          services.AddScoped<IIdentityService, IdentityService>();
+         services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
          return services;
      }
  }

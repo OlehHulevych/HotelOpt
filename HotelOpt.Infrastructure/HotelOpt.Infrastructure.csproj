@@ -7,10 +7,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="Repositories\" />
-    </ItemGroup>
-
-    <ItemGroup>
       <ProjectReference Include="..\HotelOpt.Domain\HotelOpt.Domain.csproj" />
       <ProjectReference Include="..\HotelOpt.Application\HotelOpt.Application.csproj" />
     </ItemGroup>
