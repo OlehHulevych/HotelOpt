@@ -1,5 +1,5 @@
 {
-  "version": 3,
+  "version": 4,
   "targets": {
     "net10.0": {
       "AutoMapper/16.1.1": {
@@ -3037,6 +3037,7 @@
       },
       "frameworks": {
         "net10.0": {
+          "framework": "net10.0",
           "targetAlias": "net10.0",
           "projectReferences": {
             "E:\\Projects\\HotelOpt\\HotelOpt.Application\\HotelOpt.Application.csproj": {
@@ -3062,6 +3063,7 @@
     },
     "frameworks": {
       "net10.0": {
+        "framework": "net10.0",
         "targetAlias": "net10.0",
         "dependencies": {
           "Hangfire.Core": {

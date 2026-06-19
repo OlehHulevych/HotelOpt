@@ -14,6 +14,8 @@ public sealed class User : IdentityUser<Guid>
     public DateTimeOffset CreatedAt { get; private set; }
     public DateTimeOffset UpdatedAt { get; private set; }
     public UserRole Role { get; private set; }
+    
+    public string? AvatarUrl { get; private set; }
 
     private User()
     {
