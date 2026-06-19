@@ -4,11 +4,11 @@ using Microsoft.AspNetCore.Identity;
 
 namespace HotelOpt.Infrastructure.Identity;
 
-public class User : IdentityUser<Guid>
+public sealed class User : IdentityUser<Guid>
 {
     public string FirstName { get; private set; }
     public string LastName { get; private set; }
-    public string Email { get; private set; }
+    
     public Guid TenantId { get; private set; }
     public Tenant Tenant { get; private set; }
     public DateTimeOffset CreatedAt { get; private set; }
@@ -17,6 +17,8 @@ public class User : IdentityUser<Guid>
 
     private User()
     {
+        FirstName = null!;
+        LastName = null!;
         TenantId = Guid.Empty;
         CreatedAt = DateTimeOffset.UtcNow;
         UpdatedAt = DateTimeOffset.UtcNow;
@@ -32,6 +34,7 @@ public class User : IdentityUser<Guid>
         Role = role;
         Tenant = null!;
         Email = email;
+        UserName = email;
         CreatedAt = DateTimeOffset.UtcNow;
         UpdatedAt = DateTimeOffset.UtcNow;
     }

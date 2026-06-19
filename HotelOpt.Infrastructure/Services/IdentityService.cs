@@ -20,7 +20,7 @@ public class IdentityService:IIdentityService
     {
         User newUser = new User(firstName, secondName, email, tenantId, role );
         var result = await _userManager.CreateAsync(newUser, password);
-        if (!result.Succeeded) throw new Exception("Failed to register new user");
+        if (!result.Succeeded) throw new Exception(string.Join(",", result.Errors.Select(e=>e.Description)));
         return true;
 
     }
