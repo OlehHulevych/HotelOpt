@@ -1,4 +1,5 @@
-﻿using HotelOpt.Domain.Common;
+﻿using System.Data;
+using HotelOpt.Domain.Common;
 using HotelOpt.Domain.Enums;
 
 namespace HotelOpt.Domain.Entities;
@@ -32,6 +33,16 @@ public class Room:BaseEntity
         Type = type;
         Status = RoomStatus.Cleaning;
         TenantId = tenantId;
+    }
+
+    public void Update(string? roomNumber, string? description, Guid? propertyId, RoomType? type, RoomStatus? status)
+    {
+        RoomNumber = roomNumber ?? RoomNumber;
+        Description = description ?? Description;
+        PropertyId = propertyId ?? PropertyId;
+        Type = type ?? Type;
+        Status = status ?? Status;
+        
     }
     
 }
