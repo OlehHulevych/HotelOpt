@@ -1,4 +1,5 @@
-﻿using HotelOpt.Domain.Entities;
+﻿using FluentValidation;
+using HotelOpt.Domain.Entities;
 using HoteOpt.Application.DTOs;
 using HoteOpt.Application.Interfaces;
 
@@ -8,14 +9,20 @@ public class PropertyService:IPropertyService
 {
     private readonly IRepository<Property> _repository;
     private readonly ICurrentTenantService _currentTenantService;
+    private readonly IValidator<UpdatePropertyDto> _updateValidator;
+    private readonly IValidator<CreatePropertyDto> _createValidator;
 
-    public PropertyService(IRepository<Property> repository, ICurrentTenantService currentTenantService)
+    public PropertyService(IRepository<Property> repository, ICurrentTenantService currentTenantService, IValidator<UpdatePropertyDto> updateValidator, IValidator<CreatePropertyDto> createValidator)
     {
         _repository = repository;
         _currentTenantService = currentTenantService;
+        _createValidator = createValidator;
+        _updateValidator = updateValidator;
     }
     public async Task<bool> AddProperty(CreatePropertyDto dto)
     {
+        var validResult = await _createValidator.ValidateAsync(dto);
+        if (!validResult.IsValid) throw new ValidationException(validResult.Errors);
         Property newProperty = new Property(dto.Name,dto.ContactEmail,dto.PhoneNumber,dto.StarRating, dto.Address, _currentTenantService.TenantId);
         var result = await _repository.Add(newProperty);
         return result;
@@ -23,6 +30,8 @@ public class PropertyService:IPropertyService
 
     public async Task UpdateProperty(UpdatePropertyDto dto)
     {
+        var validResult = await _updateValidator.ValidateAsync(dto);
+        if (!validResult.IsValid) throw new ValidationException(validResult.Errors);
         Property property = await _repository.GetById(dto.Id);
         property.Update(dto.Name,dto.ContactEmail,dto.PhoneNumber,dto.StarRating,dto.Address);
         await _repository.Update(property);

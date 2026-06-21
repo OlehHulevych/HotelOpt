@@ -1,4 +1,5 @@
-﻿using HotelOpt.Application.Services;
+﻿using FluentValidation;
+using HotelOpt.Application.Services;
 using HoteOpt.Application.Interfaces;
 using HoteOpt.Application.Services;
 using Microsoft.Extensions.DependencyInjection;
@@ -12,6 +13,7 @@ public static class DependencyInjection
         services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<IPropertyService, PropertyService>();
         services.AddScoped<IRoomService, RoomService>();
+        services.AddValidatorsFromAssembly(typeof(DependencyInjection).Assembly);
         return services;
     }
     

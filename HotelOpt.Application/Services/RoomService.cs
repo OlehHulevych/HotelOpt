@@ -1,4 +1,5 @@
-﻿using HotelOpt.Application.DTOs;
+﻿using FluentValidation;
+using HotelOpt.Application.DTOs;
 using HotelOpt.Domain.Entities;
 using HoteOpt.Application.Interfaces;
 
@@ -8,15 +9,21 @@ public class RoomService:IRoomService
 {
     private readonly IRepository<Room> _repository;
     private readonly ICurrentTenantService _currentTenantService;
+    private readonly IValidator<CreateRoomDto> _createValidator;
+    private readonly IValidator<UpdateRoomDto> _updateValidator;
 
-    public RoomService (IRepository<Room> repository, ICurrentTenantService currentTenantService)
+    public RoomService (IRepository<Room> repository, ICurrentTenantService currentTenantService, IValidator<CreateRoomDto> createValidator, IValidator<UpdateRoomDto> updateValidator)
     {
         _repository = repository;
         _currentTenantService = currentTenantService;
+        _createValidator = createValidator;
+        _updateValidator = updateValidator;
     }
     
     public async Task<bool> AddRoom(CreateRoomDto dto)
     {
+        var validationResult = await _createValidator.ValidateAsync(dto);
+        if (!validationResult.IsValid) throw new ValidationException(validationResult.Errors);
         Room newRoom = new Room(dto.RoomNumber,dto.Description,dto.PropertyId,dto.Type, _currentTenantService.TenantId);
         var result = await _repository.Add(newRoom);
         return result;
@@ -24,6 +31,8 @@ public class RoomService:IRoomService
 
     public async Task UpdateRoom(UpdateRoomDto dto)
     {
+        var validationResult = await _updateValidator.ValidateAsync(dto);
+        if (!validationResult.IsValid) throw new ValidationException(validationResult.Errors);
         Room room = await _repository.GetById(dto.Id);
         room.Update(dto.RoomNumber,dto.Description,dto.PropertyId,dto.Type,dto.Status);
         await _repository.Update(room);
