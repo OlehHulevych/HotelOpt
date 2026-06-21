@@ -1,4 +1,5 @@
 using System.Text;
+using HotelOpt.Handlers;
 using HotelOpt.Infrastructure;
 using HoteOpt.Application;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -31,6 +32,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowAll", p=>p.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 });
 var app = builder.Build();
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 app.MapOpenApi();
 app.MapScalarApiReference();
 
