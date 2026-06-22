@@ -1,4 +1,5 @@
-﻿using HotelOpt.Domain.Common;
+﻿using System.Linq.Expressions;
+using HotelOpt.Domain.Common;
 using HotelOpt.Infrastructure.Data;
 using HoteOpt.Application.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -44,5 +45,10 @@ public class Repository<T>:IRepository<T> where T:BaseEntity
     {
         await _context.Set<T>().Where(e=>e.Id ==id).ExecuteDeleteAsync();
         return true;
+    }
+
+    public async Task<List<T>> GetByCondition(Expression<Func<T, bool>> predicate)
+    {
+        return await _context.Set<T>().Where(predicate).ToListAsync();
     }
 }

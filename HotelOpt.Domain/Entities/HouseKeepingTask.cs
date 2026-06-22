@@ -39,6 +39,13 @@ public class HouseKeepingTask:BaseEntity
 
     }
 
+    public void UpdateHouseKeepingTask(string? title, Guid? assignedToId)
+    {
+        Title = title ?? Title;
+        AssignedToId = assignedToId ?? AssignedToId;
+        ScheduledAt = DateTimeOffset.UtcNow;
+    }
+
     public void Complete()
     {
         
@@ -62,6 +69,12 @@ public class HouseKeepingTask:BaseEntity
         if( Status==HouseKeepingTaskStatus.Completed || Status==HouseKeepingTaskStatus.Cancelled ) throw new InvalidOperationException("Failed to cancel task");
         Status = HouseKeepingTaskStatus.Cancelled;
         
+    }
+    public void Reassign(Guid newStaffId)
+    {
+        if (Status == HouseKeepingTaskStatus.Completed || Status == HouseKeepingTaskStatus.Cancelled)
+            throw new InvalidOperationException("Cannot reassign a completed or cancelled task");
+        AssignedToId = newStaffId;
     }
     
     
