@@ -51,7 +51,7 @@ async Task EnsureRolesAsync(WebApplication application)
     {
         using var scope = application.Services.CreateScope();
         var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole<Guid>>>();
-        string[] roles = { "Owner", "Manager", "Staff" };
+        string[] roles = {"Owner", "Manager", "Staff" };
         foreach (var role in roles)
         {
             if (!await roleManager.RoleExistsAsync(role)) await roleManager.CreateAsync(new IdentityRole<Guid>(role));
