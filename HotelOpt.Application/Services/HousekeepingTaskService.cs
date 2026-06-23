@@ -18,7 +18,7 @@ public class HousekeepingTaskService:IHousekeepingTaskService
     }
     public async Task<bool> CreateTask(CreateHousekeepingTaskDto dto)
     {
-        HouseKeepingTask entity = new HouseKeepingTask(dto.Title, _currentUserService.UserId, dto.AssignedToId,dto.RoomId,dto.ScheduledAt, _currentTenantService.TenantId);
+        HouseKeepingTask entity = new HouseKeepingTask(dto.Title, _currentUserService.UserId, dto.AssignedToId,dto.RoomId,dto.ScheduledAt, _currentTenantService.TenantId, dto.PropertyId);
         var result = await _repository.Add(entity);
         return result;
     }
@@ -48,6 +48,13 @@ public class HousekeepingTaskService:IHousekeepingTaskService
     public async Task<List<HouseKeepingTaskDto>> GetTaskByAssignedUser(Guid id)
     {
         List<HouseKeepingTask> list = await _repository.GetByCondition(e=>e.AssignedToId == id);
+        List<HouseKeepingTaskDto> varList = list.Select(task => new HouseKeepingTaskDto(task.Id, task.Title, task.AssignedToId, task.AssignedById, task.RoomId, task.Status, task.ScheduledAt, task.CompletedAt)).ToList();
+        return varList;
+    }
+
+    public async Task<List<HouseKeepingTaskDto>> GetTasksByProperty(Guid Id)
+    {
+        List<HouseKeepingTask> list = await _repository.GetByCondition(e=>e.PropertyId == Id);
         List<HouseKeepingTaskDto> varList = list.Select(task => new HouseKeepingTaskDto(task.Id, task.Title, task.AssignedToId, task.AssignedById, task.RoomId, task.Status, task.ScheduledAt, task.CompletedAt)).ToList();
         return varList;
     }

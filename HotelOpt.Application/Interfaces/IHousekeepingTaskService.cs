@@ -9,6 +9,7 @@ public interface IHousekeepingTaskService
     public Task<HouseKeepingTaskDto> GetTaskById(Guid id);
     public Task<List<HouseKeepingTaskDto>> GetAllTasks();
     public Task<List<HouseKeepingTaskDto>> GetTaskByAssignedUser(Guid id);
+    Task<List<HouseKeepingTaskDto>> GetTasksByProperty(Guid propertyId);
     public Task<bool> DeleteTask(Guid id);
     public Task StartTask(Guid id);
     public Task CompleteTask(Guid id);
