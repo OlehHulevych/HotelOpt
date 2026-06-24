@@ -14,6 +14,7 @@ public static class DependencyInjection
         services.AddScoped<IPropertyService, PropertyService>();
         services.AddScoped<IRoomService, RoomService>();
         services.AddScoped<IHousekeepingTaskService, HousekeepingTaskService>();
+        services.AddScoped<IShiftService, ShiftService>();
         services.AddValidatorsFromAssembly(typeof(DependencyInjection).Assembly);
         return services;
     }
