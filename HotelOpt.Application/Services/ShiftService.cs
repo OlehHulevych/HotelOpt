@@ -1,6 +1,7 @@
 ﻿using HotelOpt.Application.DTOs;
 using HotelOpt.Domain.Entities;
 using HoteOpt.Application.Interfaces;
+using HoteOpt.Application.Pagination;
 
 namespace HotelOpt.Application.Services;
 
@@ -28,18 +29,18 @@ public class ShiftService:IShiftService
         await _repository.Update(shift);
     }
 
-    public async Task<List<ShiftDto>> GetAllShifts()
+    public async Task<PaginatedResult<ShiftDto>> GetAllShifts(int currentPage, int pageSize)
     {
-        List<Shift> shifts = await _repository.GetAll();
+        (List<Shift> shifts, int totalCount) = await _repository.GetAllPaginated( currentPage,  pageSize);
         List<ShiftDto> list = shifts.Select(shift => new ShiftDto(shift.Id, shift.StartTime, shift.EndTime,shift.TenantId, shift.PropertyId,shift.StaffId, shift.Status)).ToList();
-        return list;
+        return new PaginatedResult<ShiftDto>(list,totalCount,pageSize,currentPage);
     }
 
-    public async Task<List<ShiftDto>> GetAllShiftsByProperty(Guid id)
+    public async Task<PaginatedResult<ShiftDto>> GetAllShiftsByProperty(Guid id, int currentPage, int pageSize)
     {
-        List<Shift> shifts = await _repository.GetByCondition(e=>e.PropertyId == id);
+        (List<Shift> shifts, int totalCount) = await _repository.GetByConditionPaginated(e=>e.PropertyId == id, currentPage, pageSize);
         List<ShiftDto> list = shifts.Select(shift => new ShiftDto(shift.Id, shift.StartTime, shift.EndTime,shift.TenantId, shift.PropertyId,shift.StaffId, shift.Status)).ToList();
-        return list;
+        return new PaginatedResult<ShiftDto>(list,totalCount,pageSize,currentPage);;
     }
 
     public async Task<ShiftDto> GetShiftById(Guid id)
@@ -49,11 +50,11 @@ public class ShiftService:IShiftService
         return shiftDto;
     }
 
-    public async Task<List<ShiftDto>> GetShiftByStaff(Guid id)
+    public async Task<PaginatedResult<ShiftDto>> GetShiftByStaff(Guid id, int currentPage, int pageSize)
     {
-        List<Shift> shifts = await _repository.GetByCondition(e=>e.StaffId == id);
+        (List<Shift> shifts, int totalCount) = await _repository.GetByConditionPaginated(e=>e.StaffId == id, currentPage, pageSize);
         List<ShiftDto> list = shifts.Select(shift => new ShiftDto(shift.Id, shift.StartTime, shift.EndTime,shift.TenantId, shift.PropertyId,shift.StaffId, shift.Status)).ToList();
-        return list;
+        return new PaginatedResult<ShiftDto>(list,totalCount,pageSize,currentPage);;
     }
 
     public async Task<bool> DeleteShift(Guid id)

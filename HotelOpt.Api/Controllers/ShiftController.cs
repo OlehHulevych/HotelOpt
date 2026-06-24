@@ -50,22 +50,22 @@ public class ShiftController:ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetAll()
+    public async Task<IActionResult> GetAll([FromQuery] int currentPage = 1, [FromQuery] int pageSize = 10)
     {
-        var list = await _service.GetAllShifts();
+        var list = await _service.GetAllShifts(currentPage, pageSize);
         return Ok(new { message = "All shifts were fetched", list });
     }
     
     [HttpGet("property/{id}")]
-    public async Task<IActionResult> GetAllByProperty(Guid id)
+    public async Task<IActionResult> GetAllByProperty(Guid id, [FromQuery] int currentPage = 1, [FromQuery] int pageSize = 10)
     {
-        var list = await _service.GetAllShiftsByProperty(id);
+        var list = await _service.GetAllShiftsByProperty(id, currentPage, pageSize);
         return Ok(new { message = "All shifts were fetched", list });
     }
     [HttpGet("staff/{id}")]
-    public async Task<IActionResult> GetAllByStaff(Guid id)
+    public async Task<IActionResult> GetAllByStaff(Guid id, [FromQuery] int currentPage = 1, [FromQuery] int pageSize = 10)
     {
-        var list = await _service.GetShiftByStaff(id);
+        var list = await _service.GetShiftByStaff(id, currentPage, pageSize);
         return Ok(new { message = "All shifts were fetched", list });
     }
     

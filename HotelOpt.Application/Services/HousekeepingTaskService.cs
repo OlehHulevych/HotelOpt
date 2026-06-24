@@ -1,6 +1,7 @@
 ﻿using HotelOpt.Application.DTOs;
 using HotelOpt.Domain.Entities;
 using HoteOpt.Application.Interfaces;
+using HoteOpt.Application.Pagination;
 
 namespace HotelOpt.Application.Services;
 
@@ -38,25 +39,25 @@ public class HousekeepingTaskService:IHousekeepingTaskService
         return dto;
     }
 
-    public async Task<List<HouseKeepingTaskDto>> GetAllTasks()
+    public async Task<PaginatedResult<HouseKeepingTaskDto>> GetAllTasks(int currentPage, int pageSize)
     {
-        List<HouseKeepingTask> list = await _repository.GetAll();
-        List<HouseKeepingTaskDto> varList = list.Select(task => new HouseKeepingTaskDto(task.Id, task.Title, task.AssignedToId, task.AssignedById, task.RoomId, task.Status, task.ScheduledAt, task.CompletedAt)).ToList();
-        return varList;
+        (List<HouseKeepingTask> response, int totalCount) = await _repository.GetAllPaginated(currentPage,pageSize);
+        List<HouseKeepingTaskDto> list = response.Select(task => new HouseKeepingTaskDto(task.Id, task.Title, task.AssignedToId, task.AssignedById, task.RoomId, task.Status, task.ScheduledAt, task.CompletedAt)).ToList();
+        return new PaginatedResult<HouseKeepingTaskDto>(list,totalCount,pageSize,currentPage);
     }
 
-    public async Task<List<HouseKeepingTaskDto>> GetTaskByAssignedUser(Guid id)
+    public async Task<PaginatedResult<HouseKeepingTaskDto>> GetTaskByAssignedUser(Guid id, int currentPage, int pageSize)
     {
-        List<HouseKeepingTask> list = await _repository.GetByCondition(e=>e.AssignedToId == id);
-        List<HouseKeepingTaskDto> varList = list.Select(task => new HouseKeepingTaskDto(task.Id, task.Title, task.AssignedToId, task.AssignedById, task.RoomId, task.Status, task.ScheduledAt, task.CompletedAt)).ToList();
-        return varList;
+        (List<HouseKeepingTask> response,int totalCount) = await _repository.GetByConditionPaginated(e=>e.AssignedToId == id, currentPage, pageSize);
+        List<HouseKeepingTaskDto> list = response.Select(task => new HouseKeepingTaskDto(task.Id, task.Title, task.AssignedToId, task.AssignedById, task.RoomId, task.Status, task.ScheduledAt, task.CompletedAt)).ToList();
+        return new PaginatedResult<HouseKeepingTaskDto>(list,totalCount,pageSize,currentPage);
     }
 
-    public async Task<List<HouseKeepingTaskDto>> GetTasksByProperty(Guid Id)
+    public async Task<PaginatedResult<HouseKeepingTaskDto>> GetTasksByProperty(Guid Id,int currentPage, int pageSize)
     {
-        List<HouseKeepingTask> list = await _repository.GetByCondition(e=>e.PropertyId == Id);
-        List<HouseKeepingTaskDto> varList = list.Select(task => new HouseKeepingTaskDto(task.Id, task.Title, task.AssignedToId, task.AssignedById, task.RoomId, task.Status, task.ScheduledAt, task.CompletedAt)).ToList();
-        return varList;
+        (List<HouseKeepingTask> response, int totalCount) = await _repository.GetByConditionPaginated(e=>e.PropertyId == Id, currentPage, pageSize);
+        List<HouseKeepingTaskDto> list = response.Select(task => new HouseKeepingTaskDto(task.Id, task.Title, task.AssignedToId, task.AssignedById, task.RoomId, task.Status, task.ScheduledAt, task.CompletedAt)).ToList();
+        return new PaginatedResult<HouseKeepingTaskDto>(list,totalCount,pageSize,currentPage);
     }
 
     public async  Task<bool> DeleteTask(Guid id)

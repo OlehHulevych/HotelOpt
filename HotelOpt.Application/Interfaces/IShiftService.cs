@@ -1,4 +1,5 @@
 ﻿using HotelOpt.Application.DTOs;
+using HoteOpt.Application.Pagination;
 
 namespace HoteOpt.Application.Interfaces;
 
@@ -6,9 +7,9 @@ public interface IShiftService
 {
     public Task<bool> AddShift(CreateShiftDto dto);
     public Task UpdateShift(UpdateShiftDto dto);
-    public Task<List<ShiftDto>> GetAllShifts();
-    public Task<List<ShiftDto>> GetAllShiftsByProperty(Guid id);
+    public Task<PaginatedResult<ShiftDto>> GetAllShifts(int currentPage, int pageSize);
+    public Task<PaginatedResult<ShiftDto>> GetAllShiftsByProperty(Guid id, int currentPage, int pageSize);
     public Task<ShiftDto> GetShiftById(Guid id);
-    public Task<List<ShiftDto>> GetShiftByStaff(Guid id);
+    public Task<PaginatedResult<ShiftDto>> GetShiftByStaff(Guid id, int currentPage, int pageSize);
     public Task<bool> DeleteShift(Guid id);
 }

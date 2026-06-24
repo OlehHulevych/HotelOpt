@@ -2,6 +2,7 @@
 using HotelOpt.Application.DTOs;
 using HotelOpt.Domain.Entities;
 using HoteOpt.Application.Interfaces;
+using HoteOpt.Application.Pagination;
 
 namespace HotelOpt.Application.Services;
 
@@ -38,11 +39,11 @@ public class RoomService:IRoomService
         await _repository.Update(room);
     }
 
-    public async Task<List<RoomDto>> GetAllRooms()
+    public async Task<PaginatedResult<RoomDto>> GetAllRooms(int pageSize, int currentPage)
     {
-        var response = await _repository.GetAll();
+        var (response, totalCount) = await _repository.GetAllPaginated(currentPage, pageSize);
         List<RoomDto> list = response.Select(r=>new RoomDto(r.Id,r.RoomNumber,r.Description,r.Status,r.Type,r.PropertyId,r.TenantId)).ToList();
-        return list;
+        return new PaginatedResult<RoomDto>(list,totalCount,pageSize,currentPage);
     }
 
     public async Task<RoomDto> GetRoomById(Guid id)

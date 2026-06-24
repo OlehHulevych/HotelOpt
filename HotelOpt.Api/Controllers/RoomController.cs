@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace HotelOpt.Controllers;
 [Authorize]
-[Route("/api/room")]
+[Route("api/room")]
 [ApiController]
 public class RoomController:ControllerBase
 {
@@ -25,9 +25,9 @@ public class RoomController:ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetAll()
+    public async Task<IActionResult> GetAll([FromQuery]int currentPage = 1 , [FromQuery] int pageSize = 10)
     {
-        var list = await _roomService.GetAllRooms();
+        var list = await _roomService.GetAllRooms(pageSize,currentPage);
         return Ok(new { message = "The rooms are fetched successfully", list });
         
     }

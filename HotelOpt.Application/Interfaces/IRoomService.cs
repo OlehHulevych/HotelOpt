@@ -1,5 +1,6 @@
 ﻿using HotelOpt.Application.DTOs;
 using HoteOpt.Application.DTOs;
+using HoteOpt.Application.Pagination;
 
 namespace HoteOpt.Application.Interfaces;
 
@@ -7,7 +8,7 @@ public interface IRoomService
 {
     public Task<bool> AddRoom(CreateRoomDto dto);
     public Task UpdateRoom(UpdateRoomDto dto);
-    public Task<List<RoomDto>> GetAllRooms();
+    public Task<PaginatedResult<RoomDto>> GetAllRooms(int pageSize, int currentPage);
     public Task<RoomDto> GetRoomById(Guid id);
     public Task<bool> DeleteRoom(Guid id);
 }

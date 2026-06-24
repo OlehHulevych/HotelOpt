@@ -7,7 +7,7 @@ namespace HotelOpt.Controllers;
 
 [Authorize]
 [ApiController]
-[Route("/api/task")]
+[Route("api/task")]
 public class HouseKeepingTaskController:ControllerBase
 {
     private readonly IHousekeepingTaskService _service;
@@ -33,10 +33,10 @@ public class HouseKeepingTaskController:ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetAll()
+    public async Task<IActionResult> GetAll([FromQuery] int currentPage = 1, int pageSize = 10)
     {
-        List<HouseKeepingTaskDto> tasks = await _service.GetAllTasks();
-        return Ok(new {message = "You fetched all tasks successfully", tasks});
+        var data = await _service.GetAllTasks(currentPage, pageSize);
+        return Ok(new {message = "You fetched all tasks successfully", data});
     }
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById(Guid id)
@@ -45,17 +45,17 @@ public class HouseKeepingTaskController:ControllerBase
         return Ok(new {message = $"Task {id} was fetched successfully", tasks});
     }
     [HttpGet("staff/{id}")]
-    public async Task<IActionResult> GetAllByAssignedId(Guid id)
+    public async Task<IActionResult> GetAllByAssignedId(Guid id, [FromQuery] int currentPage = 1, int pageSize= 10)
     {
-        List<HouseKeepingTaskDto> tasks = await _service.GetTaskByAssignedUser(id);
-        return Ok(new {message = "You fetched all tasks successfully", tasks});
+        var data = await _service.GetTaskByAssignedUser(id, currentPage, pageSize);
+        return Ok(new {message = "You fetched all tasks successfully", data});
     }
     
     [HttpGet("property/{id}")]
-    public async Task<IActionResult> GetAllByProperty(Guid id)
+    public async Task<IActionResult> GetAllByProperty(Guid id, [FromQuery] int currentPage = 1, int pageSize = 10)
     {
-        List<HouseKeepingTaskDto> tasks = await _service.GetTasksByProperty(id);
-        return Ok(new {message = "You fetched all tasks successfully", tasks});
+        var data  = await _service.GetTasksByProperty(id, currentPage, pageSize);
+        return Ok(new {message = "You fetched all tasks successfully", data});
     }
 
     [HttpPatch("start/{id}")]
