@@ -26,9 +26,9 @@ public class PropertyController:ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetAll()
+    public async Task<IActionResult> GetAll([FromQuery] int page = 1, [FromQuery] int pageSize = 10)
     {
-        var list = await _propertyService.GetAllProperty();
+        var list = await _propertyService.GetAllProperty(pageSize, page);
         return Ok(new { message = "The properties are fetched successfully", list });
         
     }
@@ -37,7 +37,6 @@ public class PropertyController:ControllerBase
     public async Task<IActionResult> GetById(Guid id)
     {
         PropertyDto property = await _propertyService.GetPropertyById(id);
-        if (property == null) return BadRequest(new {message=$"Failed to get your property {id}"});
         return Ok(new {message = "Your property was fetched successfully", property});
     }
 

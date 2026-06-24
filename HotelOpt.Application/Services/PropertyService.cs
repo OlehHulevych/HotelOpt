@@ -2,6 +2,7 @@
 using HotelOpt.Domain.Entities;
 using HoteOpt.Application.DTOs;
 using HoteOpt.Application.Interfaces;
+using HoteOpt.Application.Pagination;
 
 namespace HoteOpt.Application.Services;
 
@@ -37,11 +38,11 @@ public class PropertyService:IPropertyService
         await _repository.Update(property);
     }
 
-    public async Task<List<PropertyDto>> GetAllProperty()
+    public async Task<PaginatedResult<PropertyDto>> GetAllProperty(int pageSize, int currentPage)
     {
-        List<Property> response = await _repository.GetAll();
+        (List<Property> response, int totalCount) = await _repository.GetAllPaginated(currentPage, pageSize);
         List<PropertyDto> list = response.Select(p => new PropertyDto(p.Id,p.Name,p.ContactEmail,p.PhoneNumber,p.Address, p.StarRating, p.TenantId)).ToList();
-        return list;
+        return new PaginatedResult<PropertyDto>(list,totalCount,pageSize,currentPage);
     }
 
     public async Task<PropertyDto> GetPropertyById(Guid id)
