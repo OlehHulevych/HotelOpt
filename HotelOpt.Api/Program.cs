@@ -1,7 +1,9 @@
 using System.Text;
+using Hangfire;
 using HotelOpt.Handlers;
 using HotelOpt.Infrastructure;
 using HoteOpt.Application;
+using HoteOpt.Application.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
@@ -41,7 +43,8 @@ app.UseHttpsRedirection();
 app.UseCors("AllowAll");
 app.UseAuthentication();
 app.UseAuthorization();
-
+app.UseHangfireDashboard();
+RecurringJob.AddOrUpdate<IAutoAssignmentService>("daily-housekeeping-assigment", service=>service.AssignDailyHousekeepingTasks(), Cron.Daily);
 app.MapControllers();
 
 

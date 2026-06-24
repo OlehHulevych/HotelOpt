@@ -1,4 +1,6 @@
-﻿using HotelOpt.Infrastructure.Data;
+﻿using Hangfire;
+using Hangfire.PostgreSql;
+using HotelOpt.Infrastructure.Data;
  using HotelOpt.Infrastructure.Identity;
  using HotelOpt.Infrastructure.Repositories;
  using HotelOpt.Infrastructure.Services;
@@ -21,6 +23,9 @@
          services.AddTransient<ITokenService, TokenService>();
          services.AddScoped<IIdentityService, IdentityService>();
          services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+         services.AddHangfire(config =>
+             config.UsePostgreSqlStorage(configuration.GetConnectionString("DefaultConnection")));
+         services.AddHangfireServer();
          return services;
      }
  }
