@@ -16,6 +16,7 @@
      {
          services.AddDbContext<AppDbContext>(options => options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
          services.AddScoped<ICurrentTenantService, CurrentTenantService>();
+         services.AddScoped<ICurrentUserService, CurrentUserService>();
          services.AddIdentityCore<User>().AddRoles<IdentityRole<Guid>>().AddEntityFrameworkStores<AppDbContext>();
          services.AddTransient<ITokenService, TokenService>();
          services.AddScoped<IIdentityService, IdentityService>();

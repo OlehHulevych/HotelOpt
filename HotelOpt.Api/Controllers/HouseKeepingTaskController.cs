@@ -29,7 +29,7 @@ public class HouseKeepingTaskController:ControllerBase
     public async Task<IActionResult> Update([FromBody] UpdateHousekeepingTaskDto dto)
     {
         await _service.UpdateTask(dto);
-        return Ok(new { message = $"The product {dto.Id} was updated" });
+        return Ok(new { message = $"The task {dto.Id} was updated" });
     }
 
     [HttpGet]
@@ -54,7 +54,7 @@ public class HouseKeepingTaskController:ControllerBase
     [HttpGet("property/{id}")]
     public async Task<IActionResult> GetAllByProperty(Guid id)
     {
-        List<HouseKeepingTaskDto> tasks = await _service.GetTaskByAssignedUser(id);
+        List<HouseKeepingTaskDto> tasks = await _service.GetTasksByProperty(id);
         return Ok(new {message = "You fetched all tasks successfully", tasks});
     }
 
