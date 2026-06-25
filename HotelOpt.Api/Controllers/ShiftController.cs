@@ -47,7 +47,7 @@ public class ShiftController:ControllerBase
         var shift = await _service.GetShiftById(id);
         return Ok(new {message = $"The shift {id} was retrieved", shift});
         
-    }
+    } 
 
     [HttpGet]
     public async Task<IActionResult> GetAll([FromQuery] int currentPage = 1, [FromQuery] int pageSize = 10)

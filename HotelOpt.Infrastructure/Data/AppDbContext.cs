@@ -10,6 +10,7 @@ namespace HotelOpt.Infrastructure.Data;
 public class AppDbContext:IdentityDbContext<User, IdentityRole<Guid>, Guid>
 {
     public DbSet<HouseKeepingTask> HouseKeepingTasks { get; set; }
+    public DbSet<MaintenanceTicket> MaintenanceTickets { get; set; }
     public DbSet<Shift> Shifts { get; set; }
     public DbSet<Property> Properties { get; set; }
     public DbSet<Room> Rooms { get; set; }
@@ -29,6 +30,7 @@ public class AppDbContext:IdentityDbContext<User, IdentityRole<Guid>, Guid>
         builder.Entity<Room>().HasQueryFilter(r => r.TenantId == _currentTenantService.TenantId);
         builder.Entity<HouseKeepingTask>().HasQueryFilter(t => t.TenantId == _currentTenantService.TenantId);
         builder.Entity<Shift>().HasQueryFilter(s => s.TenantId == _currentTenantService.TenantId);
+        builder.Entity<MaintenanceTicket>().HasQueryFilter(t => t.TenantId == _currentTenantService.TenantId);
 
         builder.Entity<Property>().HasOne(p => p.Tenant)
             .WithMany().HasForeignKey(p => p.TenantId).OnDelete(DeleteBehavior.ClientSetNull);

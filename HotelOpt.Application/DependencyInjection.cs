@@ -16,6 +16,7 @@ public static class DependencyInjection
         services.AddScoped<IHousekeepingTaskService, HousekeepingTaskService>();
         services.AddScoped<IShiftService, ShiftService>();
         services.AddScoped<IAutoAssignmentService, AutoAssignmentsService>();
+        services.AddScoped<IMaintenanceTicketService, MaintenanceTicketService>();
         services.AddValidatorsFromAssembly(typeof(DependencyInjection).Assembly);
         return services;
     }
