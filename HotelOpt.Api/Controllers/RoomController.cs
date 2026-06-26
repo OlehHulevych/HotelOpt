@@ -32,6 +32,13 @@ public class RoomController:ControllerBase
         
     }
 
+    [HttpGet("property/{propertyId}")]
+    public async Task<IActionResult> GetAllByProperty(Guid propertyId, [FromQuery]int currentPage = 1 , [FromQuery] int pageSize = 10)
+    {
+        var result = await _roomService.GetAllRoomsByProperty(propertyId, pageSize, currentPage);
+        return Ok(new { message = "The rooms are fetched successfully", result });
+    }
+
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById(Guid id)
     {

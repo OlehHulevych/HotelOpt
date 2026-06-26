@@ -46,6 +46,13 @@ public class RoomService:IRoomService
         return new PaginatedResult<RoomDto>(list,totalCount,pageSize,currentPage);
     }
 
+    public async Task<PaginatedResult<RoomDto>> GetAllRoomsByProperty(Guid propertyId, int pageSize, int currentPage)
+    {
+        var (response, totalCount) = await _repository.GetByConditionPaginated((r=>r.PropertyId==propertyId),currentPage, pageSize);
+        List<RoomDto> list = response.Select(r=>new RoomDto(r.Id,r.RoomNumber,r.Description,r.Status,r.Type,r.PropertyId,r.TenantId)).ToList();
+        return new PaginatedResult<RoomDto>(list,totalCount,pageSize,currentPage);
+    }
+
     public async Task<RoomDto> GetRoomById(Guid id)
     {
         Room entity = await _repository.GetById(id);
