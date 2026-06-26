@@ -14,6 +14,7 @@ public class AppDbContext:IdentityDbContext<User, IdentityRole<Guid>, Guid>
     public DbSet<Shift> Shifts { get; set; }
     public DbSet<Property> Properties { get; set; }
     public DbSet<Room> Rooms { get; set; }
+    public DbSet<Message> Messages { get; set; }
     public DbSet<Tenant> Tenants { get; set; }
     private ICurrentTenantService _currentTenantService;
 
@@ -31,6 +32,7 @@ public class AppDbContext:IdentityDbContext<User, IdentityRole<Guid>, Guid>
         builder.Entity<HouseKeepingTask>().HasQueryFilter(t => t.TenantId == _currentTenantService.TenantId);
         builder.Entity<Shift>().HasQueryFilter(s => s.TenantId == _currentTenantService.TenantId);
         builder.Entity<MaintenanceTicket>().HasQueryFilter(t => t.TenantId == _currentTenantService.TenantId);
+        builder.Entity<Message>().HasQueryFilter(m => m.TenantId == _currentTenantService.TenantId);
 
         builder.Entity<Property>().HasOne(p => p.Tenant)
             .WithMany().HasForeignKey(p => p.TenantId).OnDelete(DeleteBehavior.ClientSetNull);
