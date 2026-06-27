@@ -18,6 +18,7 @@ builder.Services.AddApplication();
 builder.Services.AddOpenApi();
 builder.Services.AddSignalR();
 builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<INotificationSender, NotificationSender>();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
 {
     options.TokenValidationParameters = new TokenValidationParameters
@@ -64,6 +65,7 @@ app.UseHangfireDashboard();
 app.MapHub<NotificationHub>("/hubs/notifications");
 app.MapHub<ChatHub>("/hubs/chat");
 RecurringJob.AddOrUpdate<IAutoAssignmentService>("daily-housekeeping-assigment", service=>service.AssignDailyHousekeepingTasks(), Cron.Daily);
+RecurringJob.AddOrUpdate<ISmartAlertService>("smart-alerts", service=>service.CheckAndSendAlerts(),Cron.Hourly);
 app.MapControllers();
 
 
