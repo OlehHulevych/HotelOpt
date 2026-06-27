@@ -40,4 +40,8 @@ public sealed class User : IdentityUser<Guid>
         CreatedAt = DateTimeOffset.UtcNow;
         UpdatedAt = DateTimeOffset.UtcNow;
     }
+    public void SetAvatar(string avatarUrl)
+    {
+        AvatarUrl = avatarUrl;
+    }
 }

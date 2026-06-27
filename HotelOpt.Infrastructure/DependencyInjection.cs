@@ -1,4 +1,5 @@
-﻿using Hangfire;
+﻿using Azure.Storage.Blobs;
+using Hangfire;
 using Hangfire.PostgreSql;
 using HotelOpt.Infrastructure.Data;
  using HotelOpt.Infrastructure.Identity;
@@ -23,9 +24,11 @@ using HotelOpt.Infrastructure.Data;
          services.AddTransient<ITokenService, TokenService>();
          services.AddScoped<IIdentityService, IdentityService>();
          services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+         services.AddScoped<IFileStorageService, FileStorageService>();
          services.AddHangfire(config =>
              config.UsePostgreSqlStorage(configuration.GetConnectionString("DefaultConnection")));
          services.AddHangfireServer();
+         services.AddSingleton(x => new BlobServiceClient(configuration.GetValue<string>("AzureBlobStorage:ConnectionString")));
          return services;
      }
  }

@@ -1,5 +1,7 @@
-﻿using HoteOpt.Application.DTOs;
+﻿using System.Security.Claims;
+using HoteOpt.Application.DTOs;
 using HoteOpt.Application.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HotelOpt.Controllers;
@@ -8,10 +10,15 @@ namespace HotelOpt.Controllers;
 public class AuthController:ControllerBase
 {
     private readonly IAuthService _authService;
+    private readonly IFileStorageService _storageService;
+    private readonly IIdentityService _identityService;
+    
 
-    public AuthController(IAuthService authService)
+    public AuthController(IAuthService authService, IFileStorageService storageService, IIdentityService identityService)
     {
         _authService = authService;
+        _storageService = storageService;
+        _identityService = identityService;
     }
 
 
@@ -30,6 +37,15 @@ public class AuthController:ControllerBase
         if (String.IsNullOrEmpty(token)) return BadRequest("Failed to login user");
         return Ok(new { message = "The user is log in successfully ", token });
 
+    }
+    [Authorize]
+    [HttpPost("avatar")]
+    public async Task<IActionResult> UploadAvatar([FromForm] IFormFile file)
+    {
+        var url = await _storageService.UploadAsync(file.OpenReadStream(), file.FileName, file.ContentType);
+        var userId  = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+        await _identityService.UpdateAvatar(userId,url);
+        return Ok(new {message = "Your avatar was uploaded"});
     }
     
     

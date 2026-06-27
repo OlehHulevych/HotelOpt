@@ -40,4 +40,13 @@ public class IdentityService:IIdentityService
         bool checkPassword = await _userManager.CheckPasswordAsync(user, password);
         return checkPassword;
     }
+
+    public async Task UpdateAvatar(Guid id, string url)
+    {
+        var user = await _userManager.FindByIdAsync(id.ToString());
+        if (user == null) throw new Exception("User is not found");
+        user.SetAvatar(url);
+        await _userManager.UpdateAsync(user);
+
+    }
 }
