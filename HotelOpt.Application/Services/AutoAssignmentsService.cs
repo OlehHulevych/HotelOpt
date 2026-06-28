@@ -25,6 +25,13 @@ public class AutoAssignmentsService:IAutoAssignmentService
         List<Guid> staffIds = shifts.Select(s => s.StaffId).Distinct().ToList();
         if (staffIds.Count < 1) return;
         int staffIndex = 0;
+        var DaysFromMonday = ((int)DateTimeOffset.UtcNow.DayOfWeek + 6) % 7;
+        var weekStart = DateTimeOffset.UtcNow.AddDays(-DaysFromMonday);
+        var weeklyTasks = await _taskRepository.GetByCondition(t =>
+            t.ScheduledAt >= weekStart && t.Status != HouseKeepingTaskStatus.Cancelled);
+        Dictionary<Guid, int> weeklyCounts = weeklyTasks.GroupBy(t=>t.AssignedToId).ToDictionary(g=>g.Key, g=>g.Count());
+        staffIds = staffIds.Where(id => !weeklyCounts.ContainsKey(id) || weeklyCounts[id] < 25).ToList();
+        if (staffIds.Count < 1) return;
         for (int i = 0; i < unassignedTasks.Count; i++)
         {
             unassignedTasks[i].Reassign(staffIds[staffIndex]);
