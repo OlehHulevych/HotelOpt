@@ -1,6 +1,6 @@
 ﻿using HotelOpt.Domain.Common;
 
-namespace HoteOpt.Application.Pagination;
+namespace HotelOpt.Application.Pagination;
 
 public class PaginatedResult<T> 
 {

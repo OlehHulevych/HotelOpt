@@ -1,6 +1,6 @@
 ﻿using HotelOpt.Domain.Enums;
 
-namespace HoteOpt.Application.Interfaces;
+namespace HotelOpt.Application.Interfaces;
 
 public interface ITokenService
 {

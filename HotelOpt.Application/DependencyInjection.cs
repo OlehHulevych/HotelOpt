@@ -1,10 +1,10 @@
 ﻿using FluentValidation;
 using HotelOpt.Application.Services;
-using HoteOpt.Application.Interfaces;
+using HotelOpt.Application.Interfaces;
 using HoteOpt.Application.Services;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace HoteOpt.Application;
+namespace HotelOpt.Application;
 
 public static class DependencyInjection
 {

@@ -1,5 +1,5 @@
 ﻿using HotelOpt.Application.DTOs;
-using HoteOpt.Application.Interfaces;
+using HotelOpt.Application.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

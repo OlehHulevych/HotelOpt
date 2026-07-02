@@ -1,7 +1,7 @@
 ﻿using HotelOpt.Domain.Enums;
-using HoteOpt.Application.DTOs;
+using HotelOpt.Application.DTOs;
 
-namespace HoteOpt.Application.Interfaces;
+namespace HotelOpt.Application.Interfaces;
 
 public interface IIdentityService
 {

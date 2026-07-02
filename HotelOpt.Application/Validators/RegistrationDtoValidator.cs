@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
-using HoteOpt.Application.DTOs;
+using HotelOpt.Application.DTOs;
 
-namespace HoteOpt.Application.Validators;
+namespace HotelOpt.Application.Validators;
 
 public class RegistrationDtoValidator:AbstractValidator<RegistrationDto>
 {

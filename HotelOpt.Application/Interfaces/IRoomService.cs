@@ -1,8 +1,7 @@
 ﻿using HotelOpt.Application.DTOs;
-using HoteOpt.Application.DTOs;
-using HoteOpt.Application.Pagination;
+using HotelOpt.Application.Pagination;
 
-namespace HoteOpt.Application.Interfaces;
+namespace HotelOpt.Application.Interfaces;
 
 public interface IRoomService
 {

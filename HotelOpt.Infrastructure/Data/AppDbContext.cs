@@ -1,6 +1,6 @@
 ﻿using HotelOpt.Domain.Entities;
 using HotelOpt.Infrastructure.Identity;
-using HoteOpt.Application.Interfaces;
+using HotelOpt.Application.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -12,6 +12,7 @@ public class AppDbContext:IdentityDbContext<User, IdentityRole<Guid>, Guid>
     public DbSet<HouseKeepingTask> HouseKeepingTasks { get; set; }
     public DbSet<MaintenanceTicket> MaintenanceTickets { get; set; }
     public DbSet<Shift> Shifts { get; set; }
+    public DbSet<RoomInspection> RoomInspections { get; set; }
     public DbSet<Property> Properties { get; set; }
     public DbSet<Room> Rooms { get; set; }
     public DbSet<Message> Messages { get; set; }
@@ -26,6 +27,8 @@ public class AppDbContext:IdentityDbContext<User, IdentityRole<Guid>, Guid>
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
+        builder.Entity<User>().HasQueryFilter(u =>_currentTenantService.TenantId == Guid.Empty || u.TenantId == _currentTenantService.TenantId);
+        builder.Entity<RoomInspection>().HasQueryFilter(i=>i.TenantId==_currentTenantService.TenantId);
         builder.Entity<Tenant>().HasQueryFilter(t => t.Id == _currentTenantService.TenantId);
         builder.Entity<Property>().HasQueryFilter(p => p.TenantId == _currentTenantService.TenantId);
         builder.Entity<Room>().HasQueryFilter(r => r.TenantId == _currentTenantService.TenantId);

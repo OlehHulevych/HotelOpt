@@ -1,10 +1,10 @@
 ﻿using FluentValidation;
 using HotelOpt.Domain.Entities;
-using HoteOpt.Application.DTOs;
-using HoteOpt.Application.Interfaces;
-using HoteOpt.Application.Pagination;
+using HotelOpt.Application.DTOs;
+using HotelOpt.Application.Interfaces;
+using HotelOpt.Application.Pagination;
 
-namespace HoteOpt.Application.Services;
+namespace HotelOpt.Application.Services;
 
 public class PropertyService:IPropertyService
 {

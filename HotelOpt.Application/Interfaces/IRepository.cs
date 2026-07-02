@@ -1,7 +1,7 @@
 ﻿using System.Linq.Expressions;
 using HotelOpt.Domain.Common;
 
-namespace HoteOpt.Application.Interfaces;
+namespace HotelOpt.Application.Interfaces;
 
 public interface IRepository<T> where T:BaseEntity
 {

@@ -1,6 +1,6 @@
 ﻿using HotelOpt.Application.DTOs;
 
-namespace HoteOpt.Application.Interfaces;
+namespace HotelOpt.Application.Interfaces;
 
 public interface IStaffFairnessService
 {

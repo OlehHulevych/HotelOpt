@@ -1,7 +1,7 @@
 ﻿using HotelOpt.Application.DTOs;
 using HotelOpt.Domain.Entities;
 using HotelOpt.Domain.Enums;
-using HoteOpt.Application.Interfaces;
+using HotelOpt.Application.Interfaces;
 
 namespace HotelOpt.Application.Services;
 

@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
-using HoteOpt.Application.DTOs;
-using HoteOpt.Application.Interfaces;
+using HotelOpt.Application.DTOs;
+using HotelOpt.Application.Interfaces;
 
 namespace HoteOpt.Application.Services;
 

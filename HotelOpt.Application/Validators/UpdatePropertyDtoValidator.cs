@@ -1,5 +1,5 @@
 ﻿using FluentValidation;
-using HoteOpt.Application.DTOs;
+using HotelOpt.Application.DTOs;
 
 namespace HoteOpt.Application.Validators;
 

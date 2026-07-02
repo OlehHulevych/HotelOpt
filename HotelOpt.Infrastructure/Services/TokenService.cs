@@ -2,7 +2,7 @@
 using System.Security.Claims;
 using System.Text;
 using HotelOpt.Domain.Enums;
-using HoteOpt.Application.Interfaces;
+using HotelOpt.Application.Interfaces;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 

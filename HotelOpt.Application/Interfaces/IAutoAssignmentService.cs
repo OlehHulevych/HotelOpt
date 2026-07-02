@@ -1,4 +1,4 @@
-﻿namespace HoteOpt.Application.Interfaces;
+﻿namespace HotelOpt.Application.Interfaces;
 
 public interface IAutoAssignmentService
 {

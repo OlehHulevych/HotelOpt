@@ -1,7 +1,7 @@
 ﻿using System.Linq.Expressions;
 using HotelOpt.Domain.Common;
 using HotelOpt.Infrastructure.Data;
-using HoteOpt.Application.Interfaces;
+using HotelOpt.Application.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace HotelOpt.Infrastructure.Repositories;

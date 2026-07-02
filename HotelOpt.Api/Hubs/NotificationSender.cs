@@ -1,4 +1,4 @@
-﻿using HoteOpt.Application.Interfaces;
+﻿using HotelOpt.Application.Interfaces;
 using Microsoft.AspNetCore.SignalR;
 
 namespace HotelOpt.Hubs;

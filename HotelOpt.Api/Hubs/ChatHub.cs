@@ -1,6 +1,6 @@
 ﻿using System.Security.Claims;
 using HotelOpt.Domain.Entities;
-using HoteOpt.Application.Interfaces;
+using HotelOpt.Application.Interfaces;
 using Microsoft.AspNetCore.SignalR;
 
 namespace HotelOpt.Hubs;

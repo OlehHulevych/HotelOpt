@@ -1,7 +1,7 @@
 ﻿using HotelOpt.Domain.Enums;
 using HotelOpt.Infrastructure.Identity;
-using HoteOpt.Application.DTOs;
-using HoteOpt.Application.Interfaces;
+using HotelOpt.Application.DTOs;
+using HotelOpt.Application.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;

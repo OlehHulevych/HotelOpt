@@ -1,3 +1,3 @@
-﻿namespace HoteOpt.Application.DTOs;
+﻿namespace HotelOpt.Application.DTOs;
 
 public record LoginDto(string Email, string Password);

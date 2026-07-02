@@ -1,6 +1,7 @@
 ﻿using System.Security.Claims;
-using HoteOpt.Application.DTOs;
-using HoteOpt.Application.Interfaces;
+using HotelOpt.Application.Interfaces;
+using HotelOpt.Application.DTOs;
+using HotelOpt.Application.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -42,7 +43,7 @@ public class AuthController:ControllerBase
     [HttpPost("avatar")]
     public async Task<IActionResult> UploadAvatar([FromForm] IFormFile file)
     {
-        var url = await _storageService.UploadAsync(file.OpenReadStream(), file.FileName, file.ContentType);
+        var url = await _storageService.UploadAsync(file.OpenReadStream(), file.FileName, file.ContentType, "avatars");
         var userId  = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
         await _identityService.UpdateAvatar(userId,url);
         return Ok(new {message = "Your avatar was uploaded"});

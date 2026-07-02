@@ -1,7 +1,7 @@
-﻿using HoteOpt.Application.DTOs;
-using HoteOpt.Application.Pagination;
+﻿using HotelOpt.Application.Pagination;
+using HotelOpt.Application.DTOs;
 
-namespace HoteOpt.Application.Interfaces;
+namespace HotelOpt.Application.Interfaces;
 
 public interface IPropertyService
 {
