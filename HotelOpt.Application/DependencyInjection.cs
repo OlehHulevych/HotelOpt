@@ -20,6 +20,7 @@ public static class DependencyInjection
         services.AddScoped<IMessageService, MessageService > ();
         services.AddScoped<ISmartAlertService, SmartAlertService>();
         services.AddScoped<IStaffFairnessService, StaffFairnessService>();
+        services.AddScoped<IRoomPhotoService, RoomPhotoService>();
         services.AddValidatorsFromAssembly(typeof(DependencyInjection).Assembly);
         return services;
     }

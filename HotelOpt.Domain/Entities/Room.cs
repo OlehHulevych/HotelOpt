@@ -15,6 +15,7 @@ public class Room:BaseEntity
     
     public Guid TenantId { get; private set; }
     public Tenant Tenant { get; private set; }
+    public ICollection<RoomPhoto> Photos { get; private set; }
 
     private Room()
     {
@@ -35,6 +36,8 @@ public class Room:BaseEntity
         TenantId = tenantId;
     }
 
+    
+
     public void Update(string? roomNumber, string? description, Guid? propertyId, RoomType? type, RoomStatus? status)
     {
         RoomNumber = roomNumber ?? RoomNumber;
@@ -42,7 +45,7 @@ public class Room:BaseEntity
         PropertyId = propertyId ?? PropertyId;
         Type = type ?? Type;
         Status = status ?? Status;
-        
     }
+
     
 }

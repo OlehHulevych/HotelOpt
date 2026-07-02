@@ -17,6 +17,7 @@ public class AppDbContext:IdentityDbContext<User, IdentityRole<Guid>, Guid>
     public DbSet<Room> Rooms { get; set; }
     public DbSet<Message> Messages { get; set; }
     public DbSet<Tenant> Tenants { get; set; }
+    public DbSet<RoomPhoto> RoomPhotos { get; set; }
     private ICurrentTenantService _currentTenantService;
 
     public AppDbContext(DbContextOptions<AppDbContext> options, ICurrentTenantService currentTenantService) : base(options)
@@ -27,6 +28,7 @@ public class AppDbContext:IdentityDbContext<User, IdentityRole<Guid>, Guid>
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
+        builder.Entity<RoomPhoto>().HasQueryFilter(rp=>rp.TenantId == _currentTenantService.TenantId);
         builder.Entity<User>().HasQueryFilter(u =>_currentTenantService.TenantId == Guid.Empty || u.TenantId == _currentTenantService.TenantId);
         builder.Entity<RoomInspection>().HasQueryFilter(i=>i.TenantId==_currentTenantService.TenantId);
         builder.Entity<Tenant>().HasQueryFilter(t => t.Id == _currentTenantService.TenantId);
@@ -43,6 +45,12 @@ public class AppDbContext:IdentityDbContext<User, IdentityRole<Guid>, Guid>
         builder.Entity<HouseKeepingTask>().HasOne(t => t.Room).WithMany().HasForeignKey(t=>t.RoomId).OnDelete(DeleteBehavior.ClientSetNull);
         builder.Entity<Shift>().HasOne(s=>s.Property).WithMany().HasForeignKey(s=>s.PropertyId).OnDelete(DeleteBehavior.Cascade);
         builder.Entity<Shift>().HasOne(s=>s.Tenant).WithMany().HasForeignKey(s=>s.TenantId).OnDelete(DeleteBehavior.Cascade);
-        
+        builder.Entity<RoomPhoto>().HasOne(rp => rp.Room).WithMany(r => r.Photos).HasForeignKey(rp => rp.RoomId).OnDelete(DeleteBehavior.Cascade);
+        builder.Entity<RoomInspection>().HasOne(i => i.Room).WithMany().HasForeignKey(i => i.RoomId)
+            .OnDelete(DeleteBehavior.Cascade);
+        builder.Entity<RoomInspection>().HasOne(i => i.Property).WithMany().HasForeignKey(i => i.PropertyId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+
     }
 }
