@@ -9,11 +9,13 @@ public class MaintenanceTicketService:IMaintenanceTicketService
 {
     private readonly IRepository<MaintenanceTicket> _repository;
     private readonly ICurrentTenantService _currentTenantService;
+    private readonly IIdentityService _identityService;
 
-    public MaintenanceTicketService(IRepository<MaintenanceTicket> repository, ICurrentTenantService currentTenantService)
+    public MaintenanceTicketService(IRepository<MaintenanceTicket> repository, ICurrentTenantService currentTenantService, IIdentityService identityService)
     {
         _repository = repository;
         _currentTenantService = currentTenantService;
+        _identityService = identityService;
     }
     public async Task<bool> AddTicket(CreateMaintenanceTicketDto dto)
     {
@@ -32,36 +34,55 @@ public class MaintenanceTicketService:IMaintenanceTicketService
     public async Task<PaginatedResult<MaintenanceTicketDto>> GetAll(int currentPage, int pageSize)
     {
         (List<MaintenanceTicket> query, int totalCount) = await _repository.GetAllPaginated(currentPage, pageSize);
-        List<MaintenanceTicketDto> list =  query.Select(t=>new MaintenanceTicketDto(t.Id,t.Title,t.Description,t.StaffId,t.ReportedId, t.RoomId, t.PropertyId,t.Priority, t.Status, t.ResolvedAt)).ToList();
+        var idsStaff =  query.Select(t=>t.StaffId).ToList();
+        var idsReported = query.Select(t => t.ReportedId).ToList();
+        var ids = idsStaff.Concat(idsReported);
+        var names = await _identityService.GetUserNamesByIds(ids);
+        List<MaintenanceTicketDto> list =  query.Select(t=>new MaintenanceTicketDto(t.Id,t.Title,t.Description,t.StaffId,names.GetValueOrDefault(t.StaffId, "Unknown"), t.ReportedId, names.GetValueOrDefault(t.ReportedId, "Unknown"),t.RoomId, t.PropertyId,t.Priority, t.Status, t.ResolvedAt)).ToList();
+        
         return new PaginatedResult<MaintenanceTicketDto>(list, totalCount, pageSize,currentPage);
     }
 
     public async Task<PaginatedResult<MaintenanceTicketDto>> GetAllByProperty(Guid propertyId, int currentPage, int pageSize)
     {
         (List<MaintenanceTicket> query, int totalCount) = await _repository.GetByConditionPaginated((t=>t.PropertyId==propertyId),currentPage, pageSize);
-        List<MaintenanceTicketDto> list =  query.Select(t=>new MaintenanceTicketDto(t.Id,t.Title,t.Description,t.StaffId,t.ReportedId, t.RoomId, t.PropertyId,t.Priority, t.Status, t.ResolvedAt)).ToList();
+        var idsStaff =  query.Select(t=>t.StaffId).ToList();
+        var idsReported = query.Select(t => t.ReportedId).ToList();
+        var ids = idsStaff.Concat(idsReported);
+        var names = await _identityService.GetUserNamesByIds(ids);
+        List<MaintenanceTicketDto> list =  query.Select(t=>new MaintenanceTicketDto(t.Id,t.Title,t.Description,t.StaffId,names.GetValueOrDefault(t.StaffId, "Unknown"), t.ReportedId,names.GetValueOrDefault(t.ReportedId, "Unknown"), t.RoomId, t.PropertyId,t.Priority, t.Status, t.ResolvedAt)).ToList();
         return new PaginatedResult<MaintenanceTicketDto>(list, totalCount, pageSize,currentPage);
     }
 
     public async Task<PaginatedResult<MaintenanceTicketDto>> GetByStaffId(Guid staffId, int currentPage, int pageSize)
     {
         (List<MaintenanceTicket> query, int totalCount) = await _repository.GetByConditionPaginated((t=>t.StaffId==staffId),currentPage, pageSize);
-        List<MaintenanceTicketDto> list =  query.Select(t=>new MaintenanceTicketDto(t.Id,t.Title,t.Description,t.StaffId,t.ReportedId, t.RoomId, t.PropertyId,t.Priority, t.Status, t.ResolvedAt)).ToList();
+        var idsStaff =  query.Select(t=>t.StaffId).ToList();
+        var idsReported = query.Select(t => t.ReportedId).ToList();
+        var ids = idsStaff.Concat(idsReported);
+        var names = await _identityService.GetUserNamesByIds(ids);
+        List<MaintenanceTicketDto> list =  query.Select(t=>new MaintenanceTicketDto(t.Id,t.Title,t.Description,t.StaffId, names.GetValueOrDefault(t.StaffId, "Unknown"), t.ReportedId, names.GetValueOrDefault(t.ReportedId, "Unknown"),t.RoomId, t.PropertyId,t.Priority, t.Status, t.ResolvedAt)).ToList();
         return new PaginatedResult<MaintenanceTicketDto>(list, totalCount, pageSize,currentPage);
     }
 
     public async Task<PaginatedResult<MaintenanceTicketDto>> GetAllByRoom(Guid roomId, int currentPage, int pageSize)
     {
         (List<MaintenanceTicket> query, int totalCount) = await _repository.GetByConditionPaginated((t=>t.RoomId == roomId),currentPage, pageSize);
-        List<MaintenanceTicketDto> list =  query.Select(t=>new MaintenanceTicketDto(t.Id,t.Title,t.Description,t.StaffId,t.ReportedId, t.RoomId, t.PropertyId,t.Priority, t.Status, t.ResolvedAt)).ToList();
+        var idsStaff =  query.Select(t=>t.StaffId).ToList();
+        var idsReported = query.Select(t => t.ReportedId).ToList();
+        var ids = idsStaff.Concat(idsReported);
+        var names = await _identityService.GetUserNamesByIds(ids);
+        List<MaintenanceTicketDto> list =  query.Select(t=>new MaintenanceTicketDto(t.Id,t.Title,t.Description,t.StaffId, names.GetValueOrDefault(t.StaffId, "Unknown"),t.ReportedId,names.GetValueOrDefault(t.ReportedId, "Unknown"), t.RoomId, t.PropertyId,t.Priority, t.Status, t.ResolvedAt)).ToList();
         return new PaginatedResult<MaintenanceTicketDto>(list, totalCount, pageSize,currentPage);
     }
 
     public async Task<MaintenanceTicketDto> GetById(Guid id)
     {
         MaintenanceTicket response = await _repository.GetById(id);
+        var ids = new List<Guid> { response.StaffId, response.ReportedId};
+        var names = await _identityService.GetUserNamesByIds(ids);
         MaintenanceTicketDto ticket = new MaintenanceTicketDto(response.Id, response.Title, response.Description,
-            response.StaffId,response.ReportedId,response.RoomId,response.PropertyId,response.Priority,response.Status,response.ResolvedAt);
+            response.StaffId, names.GetValueOrDefault(response.StaffId, "Unknown"), response.ReportedId,names.GetValueOrDefault(response.ReportedId, "Unknown"),response.RoomId,response.PropertyId,response.Priority,response.Status,response.ResolvedAt);
         return ticket;
     }
 

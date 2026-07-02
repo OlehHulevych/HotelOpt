@@ -10,12 +10,14 @@ public class HousekeepingTaskService:IHousekeepingTaskService
     private readonly IRepository<HouseKeepingTask> _repository;
     private readonly ICurrentUserService _currentUserService;
     private readonly ICurrentTenantService _currentTenantService;
+    private readonly IIdentityService _identityService;
 
-    public HousekeepingTaskService(IRepository<HouseKeepingTask> repository, ICurrentUserService currentUserService, ICurrentTenantService currentTenantService)
+    public HousekeepingTaskService(IRepository<HouseKeepingTask> repository, ICurrentUserService currentUserService, ICurrentTenantService currentTenantService, IIdentityService identityService)
     {
         _repository = repository;
         _currentUserService = currentUserService;
         _currentTenantService = currentTenantService;
+        _identityService = identityService;
     }
     public async Task<bool> CreateTask(CreateHousekeepingTaskDto dto)
     {
@@ -34,7 +36,9 @@ public class HousekeepingTaskService:IHousekeepingTaskService
     public async Task<HouseKeepingTaskDto> GetTaskById(Guid id)
     {
         HouseKeepingTask task = await _repository.GetById(id);
-        HouseKeepingTaskDto dto = new HouseKeepingTaskDto(task.Id, task.Title, task.AssignedToId, task.AssignedById,
+        List<Guid> ids = new List<Guid>{task.AssignedToId, task.AssignedById};
+        var names = await _identityService.GetUserNamesByIds(ids);
+        HouseKeepingTaskDto dto = new HouseKeepingTaskDto(task.Id, task.Title, task.AssignedToId, names.GetValueOrDefault(task.AssignedToId,"Unknown"), task.AssignedById, names.GetValueOrDefault(task.AssignedById,"Unknown"),
             task.RoomId, task.Status, task.ScheduledAt, task.CompletedAt);
         return dto;
     }
@@ -42,21 +46,34 @@ public class HousekeepingTaskService:IHousekeepingTaskService
     public async Task<PaginatedResult<HouseKeepingTaskDto>> GetAllTasks(int currentPage, int pageSize)
     {
         (List<HouseKeepingTask> response, int totalCount) = await _repository.GetAllPaginated(currentPage,pageSize);
-        List<HouseKeepingTaskDto> list = response.Select(task => new HouseKeepingTaskDto(task.Id, task.Title, task.AssignedToId, task.AssignedById, task.RoomId, task.Status, task.ScheduledAt, task.CompletedAt)).ToList();
+        var idsTo = response.Select(task => task.AssignedToId).ToList();
+        var idsBy = response.Select(task => task.AssignedById).ToList();
+        var ids = idsTo.Concat(idsBy);
+        var names = await _identityService.GetUserNamesByIds(ids);
+        List<HouseKeepingTaskDto> list = response.Select(task => new HouseKeepingTaskDto(task.Id, task.Title, task.AssignedToId, names.GetValueOrDefault(task.AssignedToId, "Unknown"), task.AssignedById,names.GetValueOrDefault(task.AssignedById, "Unknown") , task.RoomId, task.Status, task.ScheduledAt, task.CompletedAt)).ToList();
         return new PaginatedResult<HouseKeepingTaskDto>(list,totalCount,pageSize,currentPage);
     }
 
     public async Task<PaginatedResult<HouseKeepingTaskDto>> GetTaskByAssignedUser(Guid id, int currentPage, int pageSize)
     {
+        
         (List<HouseKeepingTask> response,int totalCount) = await _repository.GetByConditionPaginated(e=>e.AssignedToId == id, currentPage, pageSize);
-        List<HouseKeepingTaskDto> list = response.Select(task => new HouseKeepingTaskDto(task.Id, task.Title, task.AssignedToId, task.AssignedById, task.RoomId, task.Status, task.ScheduledAt, task.CompletedAt)).ToList();
+        var idsTo = response.Select(task => task.AssignedToId).ToList();
+        var idsBy = response.Select(task => task.AssignedById).ToList();
+        var ids = idsTo.Concat(idsBy);
+        var names = await _identityService.GetUserNamesByIds(ids);
+        List<HouseKeepingTaskDto> list = response.Select(task => new HouseKeepingTaskDto(task.Id, task.Title, task.AssignedToId, names.GetValueOrDefault(task.AssignedToId, "Unknown"),task.AssignedById, names.GetValueOrDefault(task.AssignedById, "Unknown"), task.RoomId, task.Status, task.ScheduledAt, task.CompletedAt)).ToList();
         return new PaginatedResult<HouseKeepingTaskDto>(list,totalCount,pageSize,currentPage);
     }
 
-    public async Task<PaginatedResult<HouseKeepingTaskDto>> GetTasksByProperty(Guid Id,int currentPage, int pageSize)
+    public async Task<PaginatedResult<HouseKeepingTaskDto>> GetTasksByProperty(Guid id,int currentPage, int pageSize)
     {
-        (List<HouseKeepingTask> response, int totalCount) = await _repository.GetByConditionPaginated(e=>e.PropertyId == Id, currentPage, pageSize);
-        List<HouseKeepingTaskDto> list = response.Select(task => new HouseKeepingTaskDto(task.Id, task.Title, task.AssignedToId, task.AssignedById, task.RoomId, task.Status, task.ScheduledAt, task.CompletedAt)).ToList();
+        (List<HouseKeepingTask> response, int totalCount) = await _repository.GetByConditionPaginated(e=>e.PropertyId == id, currentPage, pageSize);
+        var idsTo = response.Select(task => task.AssignedToId).ToList();
+        var idsBy = response.Select(task => task.AssignedById).ToList();
+        var ids = idsTo.Concat(idsBy);
+        var names = await _identityService.GetUserNamesByIds(ids);
+        List<HouseKeepingTaskDto> list = response.Select(task => new HouseKeepingTaskDto(task.Id, task.Title, task.AssignedToId, names.GetValueOrDefault(task.AssignedToId, "Unknown"), task.AssignedById,names.GetValueOrDefault(task.AssignedById, "Unknown"), task.RoomId, task.Status, task.ScheduledAt, task.CompletedAt)).ToList();
         return new PaginatedResult<HouseKeepingTaskDto>(list,totalCount,pageSize,currentPage);
     }
 

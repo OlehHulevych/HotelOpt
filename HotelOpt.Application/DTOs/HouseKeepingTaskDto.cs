@@ -2,4 +2,4 @@
 
 namespace HotelOpt.Application.DTOs;
 
-public record HouseKeepingTaskDto( Guid Id, string Title, Guid AssignedToId, Guid AssignedById, Guid RoomId, HouseKeepingTaskStatus Status, DateTimeOffset ScheduledAt, DateTimeOffset? CompletedAt);
+public record HouseKeepingTaskDto( Guid Id, string Title, Guid AssignedToId, string? AssignedToName, Guid AssignedById,string? AssignedByName, Guid RoomId, HouseKeepingTaskStatus Status, DateTimeOffset ScheduledAt, DateTimeOffset? CompletedAt);

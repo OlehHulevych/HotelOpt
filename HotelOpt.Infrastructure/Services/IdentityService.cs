@@ -5,6 +5,7 @@ using HotelOpt.Application.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace HotelOpt.Infrastructure.Services;
 
@@ -49,4 +50,14 @@ public class IdentityService:IIdentityService
         await _userManager.UpdateAsync(user);
 
     }
+
+    public async Task<Dictionary<Guid, string>> GetUserNamesByIds(IEnumerable<Guid> ids)
+    {
+        var users = await _userManager.Users.Where(u => ids.Contains(u.Id))
+            .Select(u => new { u.Id, u.FirstName, u.LastName }).ToDictionaryAsync(u=>u.Id, u=>$"{u.FirstName} {u.LastName}");
+        return users;
+
+    }
+
+    
 }
