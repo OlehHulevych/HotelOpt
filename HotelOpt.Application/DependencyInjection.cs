@@ -21,6 +21,7 @@ public static class DependencyInjection
         services.AddScoped<ISmartAlertService, SmartAlertService>();
         services.AddScoped<IStaffFairnessService, StaffFairnessService>();
         services.AddScoped<IRoomPhotoService, RoomPhotoService>();
+        services.AddScoped<IGuestService, GuestService>();
         services.AddValidatorsFromAssembly(typeof(DependencyInjection).Assembly);
         return services;
     }

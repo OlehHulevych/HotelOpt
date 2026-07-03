@@ -18,6 +18,7 @@ public class AppDbContext:IdentityDbContext<User, IdentityRole<Guid>, Guid>
     public DbSet<Message> Messages { get; set; }
     public DbSet<Tenant> Tenants { get; set; }
     public DbSet<RoomPhoto> RoomPhotos { get; set; }
+    public DbSet<Guest> Guests { get; set; }
     private ICurrentTenantService _currentTenantService;
 
     public AppDbContext(DbContextOptions<AppDbContext> options, ICurrentTenantService currentTenantService) : base(options)
@@ -28,6 +29,7 @@ public class AppDbContext:IdentityDbContext<User, IdentityRole<Guid>, Guid>
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
+        builder.Entity<Guest>().HasQueryFilter(g => g.TenantId == _currentTenantService.TenantId);
         builder.Entity<RoomPhoto>().HasQueryFilter(rp=>rp.TenantId == _currentTenantService.TenantId);
         builder.Entity<User>().HasQueryFilter(u =>_currentTenantService.TenantId == Guid.Empty || u.TenantId == _currentTenantService.TenantId);
         builder.Entity<RoomInspection>().HasQueryFilter(i=>i.TenantId==_currentTenantService.TenantId);
