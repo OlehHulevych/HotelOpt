@@ -24,9 +24,11 @@ using HotelOpt.Infrastructure.Data;
          services.AddTransient<ITokenService, TokenService>();
          services.AddScoped<IIdentityService, IdentityService>();
          services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+         services.AddScoped<IBookingRepository, BookingRepository>();
          services.AddScoped<IFileStorageService, FileStorageService>();
          services.AddScoped<IGeminiService, GeminiService>();
          services.AddScoped<IRoomInspectionService, RoomInspectionService>();
+         
          services.AddHttpClient("gemini");
          services.AddHangfire(config =>
              config.UsePostgreSqlStorage(configuration.GetConnectionString("DefaultConnection")));

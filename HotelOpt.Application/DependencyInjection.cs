@@ -22,6 +22,7 @@ public static class DependencyInjection
         services.AddScoped<IStaffFairnessService, StaffFairnessService>();
         services.AddScoped<IRoomPhotoService, RoomPhotoService>();
         services.AddScoped<IGuestService, GuestService>();
+        services.AddScoped<IBookingService, BookingService>();
         services.AddValidatorsFromAssembly(typeof(DependencyInjection).Assembly);
         return services;
     }

@@ -11,6 +11,8 @@ public class Guest:BaseEntity
     public Tenant Tenant { get; private set; }
     public string Email { get; private set; }
     public string Phone { get; private set; }
+    public ICollection<Booking> Bookings { get; private set; }
+    
 
     private Guest ()
     {
@@ -20,6 +22,7 @@ public class Guest:BaseEntity
         Tenant = null!;
         Email = null!;
         Phone = null!;
+        Bookings = new List<Booking>();
     }
 
     public Guest(string firstName, string lastName, string passportNumber, Guid tenantId, string email, string phone)
@@ -30,6 +33,8 @@ public class Guest:BaseEntity
         TenantId = tenantId;
         Email = email;
         Phone = phone;
+        Bookings = new List<Booking>();
+
     }
     
     public void Update(string? firstName, string? lastName, string? email, string? phone)
