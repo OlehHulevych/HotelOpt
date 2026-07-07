@@ -1,8 +1,10 @@
-﻿using FluentValidation;
+﻿using System.Collections.Specialized;
+using FluentValidation;
 using HotelOpt.Domain.Entities;
 using HotelOpt.Application.DTOs;
 using HotelOpt.Application.Interfaces;
 using HotelOpt.Application.Pagination;
+using HotelOpt.Domain.Enums;
 
 namespace HotelOpt.Application.Services;
 
@@ -24,9 +26,23 @@ public class PropertyService:IPropertyService
     }
     public async Task<bool> AddProperty(CreatePropertyDto dto)
     {
-        
         var validResult = await _createValidator.ValidateAsync(dto);
         if (!validResult.IsValid) throw new ValidationException(validResult.Errors);
+        Tenant? tenant = await _tenantRepository.GetById(_currentTenantService.TenantId);
+        if (tenant == null) throw new Exception("Tenant is not found");
+        var properties = await _repository.GetByCondition(p=>p.TenantId==tenant.Id);
+        int count = properties.Count;
+        if (tenant.SubscriptionPlan == SubscriptionPlan.Trial)
+        {
+            if (count >= 1) throw new Exception("Limit of properties is reached.Please upgrade your subscription to create new one");
+        }
+
+        if (tenant.SubscriptionPlan == SubscriptionPlan.Basic)
+        {
+            if(count>=3) throw new Exception("Limit of properties is reached.Please upgrade your subscription to create new one");
+        }
+        
+        
         Property newProperty = new Property(dto.Name,dto.ContactEmail,dto.PhoneNumber,dto.StarRating, dto.Address, _currentTenantService.TenantId);
         var result = await _repository.Add(newProperty);
         return result;
