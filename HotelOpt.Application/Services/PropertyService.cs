@@ -9,19 +9,22 @@ namespace HotelOpt.Application.Services;
 public class PropertyService:IPropertyService
 {
     private readonly IRepository<Property> _repository;
+    private readonly IRepository<Tenant> _tenantRepository;
     private readonly ICurrentTenantService _currentTenantService;
     private readonly IValidator<UpdatePropertyDto> _updateValidator;
     private readonly IValidator<CreatePropertyDto> _createValidator;
 
-    public PropertyService(IRepository<Property> repository, ICurrentTenantService currentTenantService, IValidator<UpdatePropertyDto> updateValidator, IValidator<CreatePropertyDto> createValidator)
+    public PropertyService(IRepository<Property> repository, ICurrentTenantService currentTenantService, IValidator<UpdatePropertyDto> updateValidator, IValidator<CreatePropertyDto> createValidator, IRepository<Tenant> tenantRepository)
     {
         _repository = repository;
         _currentTenantService = currentTenantService;
         _createValidator = createValidator;
         _updateValidator = updateValidator;
+        _tenantRepository = tenantRepository;
     }
     public async Task<bool> AddProperty(CreatePropertyDto dto)
     {
+        
         var validResult = await _createValidator.ValidateAsync(dto);
         if (!validResult.IsValid) throw new ValidationException(validResult.Errors);
         Property newProperty = new Property(dto.Name,dto.ContactEmail,dto.PhoneNumber,dto.StarRating, dto.Address, _currentTenantService.TenantId);
