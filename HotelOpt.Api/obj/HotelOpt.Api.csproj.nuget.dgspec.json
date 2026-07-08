@@ -569,11 +569,11 @@
             },
             "FluentValidation": {
               "target": "Package",
-              "version": "[12.1.1, )"
+              "version": "[11.9.2, )"
             },
             "FluentValidation.DependencyInjectionExtensions": {
               "target": "Package",
-              "version": "[12.1.1, )"
+              "version": "[11.9.2, )"
             }
           },
           "imports": [
@@ -1295,6 +1295,10 @@
             "StackExchange.Redis": {
               "target": "Package",
               "version": "[2.13.17, )"
+            },
+            "Stripe.net": {
+              "target": "Package",
+              "version": "[52.1.0, )"
             }
           },
           "imports": [

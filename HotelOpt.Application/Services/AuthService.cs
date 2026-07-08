@@ -2,7 +2,7 @@
 using HotelOpt.Application.DTOs;
 using HotelOpt.Application.Interfaces;
 
-namespace HoteOpt.Application.Services;
+namespace HotelOpt.Application.Services;
 
 public class AuthService:IAuthService
 {

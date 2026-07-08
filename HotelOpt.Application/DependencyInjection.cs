@@ -1,7 +1,6 @@
 ﻿using FluentValidation;
 using HotelOpt.Application.Services;
 using HotelOpt.Application.Interfaces;
-using HoteOpt.Application.Services;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace HotelOpt.Application;
