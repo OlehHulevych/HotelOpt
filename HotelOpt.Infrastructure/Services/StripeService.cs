@@ -1,4 +1,5 @@
-﻿using HotelOpt.Application.Interfaces;
+﻿using HotelOpt.Application.DTOs;
+using HotelOpt.Application.Interfaces;
 using Stripe;
 
 namespace HotelOpt.Infrastructure.Services;
@@ -36,5 +37,12 @@ public class StripeService:IStripeService
     {
         var service = new SubscriptionService();
         await service.CancelAsync(subscriptionId);
+    }
+
+    public StripeWebhookResult ParseWebhookEvent(string json, string stripeSignature, string webhookSecret)
+    {
+        var stripeEvent = EventUtility.ConstructEvent(json, stripeSignature, webhookSecret, throwOnApiVersionMismatch: false);
+        var customerId = stripeEvent.Data.Object is Invoice invoice ? invoice.CustomerId : string.Empty;
+        return new StripeWebhookResult(stripeEvent.Type, customerId);
     }
 }

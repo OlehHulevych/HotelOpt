@@ -34,11 +34,22 @@ public class Tenant:BaseEntity
     public void StartTrial()
     {
         if (SubscriptionPlan == SubscriptionPlan.Pro || SubscriptionPlan == SubscriptionPlan.Basic)
-            throw new Exception($"You can't use trial version because you have already use {SubscriptionPlan.ToString()}");
+            throw new Exception($"You can't use trial version because you have already use {SubscriptionPlan}");
         SubscriptionPlan = SubscriptionPlan.Trial;
         SubscriptionStatus = SubscriptionStatus.Active;
         TrialEndsAt = DateTimeOffset.UtcNow.AddDays(30);
     }
-    
 
+    public void SetSubscription(string customerId, string subscriptionId, SubscriptionPlan plan)
+    {
+        StripeCustomerId = customerId;
+        StripeSubscriptionId = subscriptionId;
+        SubscriptionPlan = plan;
+        SubscriptionStatus = SubscriptionStatus.Active;
+    }
+
+    public void UpdateSubscriptionStatus(SubscriptionStatus status)
+    {
+        SubscriptionStatus = status;
+    }
 }
