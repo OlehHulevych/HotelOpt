@@ -12,13 +12,15 @@ public class BookingService:IBookingService
     private readonly IRepository<Guest> _guestRepository;
     private readonly IRepository<Room> _roomRepository;
     private readonly ICurrentTenantService _currentTenantService;
+    private readonly IInvoiceService _invoiceService;
 
-    public BookingService(IBookingRepository repository, ICurrentTenantService currentTenantService, IRepository<Guest> guestRepository, IRepository<Room> roomRepository)
+    public BookingService(IBookingRepository repository, ICurrentTenantService currentTenantService, IRepository<Guest> guestRepository, IRepository<Room> roomRepository, IInvoiceService invoiceService)
     {
         _repository = repository;
         _currentTenantService = currentTenantService;
         _guestRepository = guestRepository;
         _roomRepository = roomRepository;
+        _invoiceService = invoiceService;
     }
     public async Task<BookingResponseDto> CreateAsync(CreateBookingDto dto)
     {
@@ -53,6 +55,7 @@ public class BookingService:IBookingService
         room.SetCleaning();
         await _repository.Update(booking);
         await _roomRepository.Update(room);
+        await _invoiceService.GenerateAsync(bookingId);
     }
 
     public async Task CancelAsync(Guid bookingId)

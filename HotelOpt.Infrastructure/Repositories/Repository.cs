@@ -67,4 +67,16 @@ public class Repository<T>:IRepository<T> where T:BaseEntity
         List<T> list = await query.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
         return (list, totalCount) ;
     }
+
+    public async Task<T?> GetByIdWithIncludes(Guid id, params Expression<Func<T, object>>[] includes)
+    {
+        IQueryable<T> query = _context.Set<T>();
+        query = includes.Aggregate(query, (current, include) => current.Include(include));
+        return await query.FirstOrDefaultAsync(e => e.Id == id);
+    }
+
+    public async Task<T?> GetSingleByCondition(Expression<Func<T, bool>> predicate)
+    {
+        return await _context.Set<T>().FirstOrDefaultAsync(predicate);
+    }
 }

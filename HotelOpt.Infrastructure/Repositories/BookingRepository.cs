@@ -59,6 +59,13 @@ public class BookingRepository:IBookingRepository
         return (list, totalCount) ;
     }
 
+    public async Task<Booking?> GetByIdWithIncludes(Guid id, params Expression<Func<Booking, object>>[] includes)
+    {
+        IQueryable<Booking> query = _context.Set<Booking>();
+        query = includes.Aggregate(query, (current, include) => current.Include(include));
+        return await query.FirstOrDefaultAsync(e => e.Id == id);
+    }
+
     public async Task<Booking> GetById(Guid id)
     {
         Booking? entity = await _context.Bookings.Include(b=>b.Guests).FirstOrDefaultAsync(b=>b.Id==id);
@@ -78,6 +85,10 @@ public class BookingRepository:IBookingRepository
     {
         _context.Bookings.Update(entity); 
         await _context.SaveChangesAsync();
+    }
+    public async Task<Booking?> GetSingleByCondition(Expression<Func<Booking, bool>> predicate)
+    {
+        return await _context.Set<Booking>().FirstOrDefaultAsync(predicate);
     }
 }
 

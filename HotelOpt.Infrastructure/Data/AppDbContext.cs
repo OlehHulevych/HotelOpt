@@ -18,6 +18,7 @@ public class AppDbContext:IdentityDbContext<User, IdentityRole<Guid>, Guid>
     public DbSet<Message> Messages { get; set; }
     public DbSet<Tenant> Tenants { get; set; }
     public DbSet<RoomPhoto> RoomPhotos { get; set; }
+    public DbSet<Invoice> Invoices { get; set; }
     public DbSet<Guest> Guests { get; set; }
     public DbSet<Booking> Bookings { get; set; }
     private ICurrentTenantService _currentTenantService;
@@ -42,6 +43,7 @@ public class AppDbContext:IdentityDbContext<User, IdentityRole<Guid>, Guid>
         builder.Entity<Shift>().HasQueryFilter(s => s.TenantId == _currentTenantService.TenantId);
         builder.Entity<MaintenanceTicket>().HasQueryFilter(t => t.TenantId == _currentTenantService.TenantId);
         builder.Entity<Message>().HasQueryFilter(m => m.TenantId == _currentTenantService.TenantId);
+        builder.Entity<Invoice>().HasQueryFilter(i => i.TenantId == _currentTenantService.TenantId);
 
         builder.Entity<Property>().HasOne(p => p.Tenant)
             .WithMany().HasForeignKey(p => p.TenantId).OnDelete(DeleteBehavior.ClientSetNull);
@@ -57,6 +59,9 @@ public class AppDbContext:IdentityDbContext<User, IdentityRole<Guid>, Guid>
         builder.Entity<Booking>().HasOne(b => b.Property).WithMany().HasForeignKey(b => b.PropertyId);
         builder.Entity<Booking>().HasOne(b => b.Room).WithMany().HasForeignKey(b=>b.RoomId);
         builder.Entity<Booking>().HasMany(b => b.Guests).WithMany(g => g.Bookings);
+        builder.Entity<Invoice>().HasOne(i => i.Booking).WithMany().HasForeignKey(i=>i.BookingId).OnDelete(DeleteBehavior.Cascade);
+        builder.Entity<Invoice>().HasOne(i => i.Room).WithMany().HasForeignKey(i => i.RoomId)
+            .OnDelete(DeleteBehavior.Cascade);
 
 
 

@@ -2,4 +2,4 @@
 
 namespace HotelOpt.Application.DTOs;
 
-public record UpdateRoomDto(Guid Id, string? RoomNumber, string? Description, Guid? PropertyId, RoomType? Type);
+public record UpdateRoomDto(Guid Id, string? RoomNumber, string? Description, Guid? PropertyId, RoomType? Type, Decimal? PricePerNight);

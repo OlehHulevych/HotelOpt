@@ -14,6 +14,7 @@ public class Room:BaseEntity
     
     public Guid TenantId { get; private set; }
     public Tenant Tenant { get; private set; }
+    public Decimal PricePerNight { get; private set; }
     public ICollection<RoomPhoto> Photos { get; private set; }
 
     private Room()
@@ -21,11 +22,12 @@ public class Room:BaseEntity
         RoomNumber = null!;
         Description = null!;
         Property = null!;
+        PricePerNight = 0;
         Type = RoomType.Single;
         Tenant = null!;
     }
 
-    public Room(string roomNumber, string description, Guid propertyId, RoomType type, Guid tenantId)
+    public Room(string roomNumber, string description, Guid propertyId, RoomType type, Guid tenantId, Decimal pricePerNight)
     {
         RoomNumber = roomNumber;
         Description = description;
@@ -33,16 +35,18 @@ public class Room:BaseEntity
         Type = type;
         Status = RoomStatus.Available;
         TenantId = tenantId;
+        PricePerNight = pricePerNight;
     }
 
     
 
-    public void Update(string? roomNumber, string? description, Guid? propertyId, RoomType? type)
+    public void Update(string? roomNumber, string? description, Guid? propertyId, RoomType? type, Decimal? pricePerNight)
     {
         RoomNumber = roomNumber ?? RoomNumber;
         Description = description ?? Description;
         PropertyId = propertyId ?? PropertyId;
         Type = type ?? Type;
+        PricePerNight = pricePerNight ?? PricePerNight;
     }
 
     public void SetOccupied()

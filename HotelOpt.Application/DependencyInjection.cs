@@ -23,6 +23,7 @@ public static class DependencyInjection
         services.AddScoped<IGuestService, GuestService>();
         services.AddScoped<IBookingService, BookingService>();
         services.AddScoped<ISubscriptionService, SubscriptionService>();
+        services.AddScoped<IInvoiceService, InvoiceService>();
         services.AddValidatorsFromAssembly(typeof(DependencyInjection).Assembly);
         return services;
     }

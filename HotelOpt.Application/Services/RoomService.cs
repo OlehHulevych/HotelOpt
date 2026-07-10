@@ -26,7 +26,7 @@ public class RoomService:IRoomService
     {
         var validationResult = await _createValidator.ValidateAsync(dto);
         if (!validationResult.IsValid) throw new ValidationException(validationResult.Errors);
-        Room newRoom = new Room(dto.RoomNumber,dto.Description,dto.PropertyId,dto.Type, _currentTenantService.TenantId);
+        Room newRoom = new Room(dto.RoomNumber,dto.Description,dto.PropertyId,dto.Type, _currentTenantService.TenantId, dto.PricePerNight);
         var result = await _repository.Add(newRoom);
         return result;
     }
@@ -36,7 +36,7 @@ public class RoomService:IRoomService
         var validationResult = await _updateValidator.ValidateAsync(dto);
         if (!validationResult.IsValid) throw new ValidationException(validationResult.Errors);
         Room room = await _repository.GetById(dto.Id);
-        room.Update(dto.RoomNumber,dto.Description,dto.PropertyId,dto.Type);
+        room.Update(dto.RoomNumber,dto.Description,dto.PropertyId,dto.Type, dto.PricePerNight);
         await _repository.Update(room);
     }
 
