@@ -1,5 +1,6 @@
 ﻿using HotelOpt.Application.DTOs;
 using HotelOpt.Application.Interfaces;
+using HotelOpt.Domain.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -33,9 +34,9 @@ public class RoomController:ControllerBase
     }
 
     [HttpGet("property/{propertyId}")]
-    public async Task<IActionResult> GetAllByProperty(Guid propertyId, [FromQuery]int currentPage = 1 , [FromQuery] int pageSize = 10)
+    public async Task<IActionResult> GetAllByProperty(Guid propertyId, [FromQuery] RoomStatus? status, [FromQuery]int currentPage = 1 , [FromQuery] int pageSize = 10)
     {
-        var result = await _roomService.GetAllRoomsByProperty(propertyId, pageSize, currentPage);
+        var result = await _roomService.GetAllRoomsByProperty(propertyId, pageSize, currentPage, status);
         return Ok(new { message = "The rooms are fetched successfully", result });
     }
 

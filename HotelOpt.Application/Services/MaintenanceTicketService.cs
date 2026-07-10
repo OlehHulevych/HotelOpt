@@ -2,6 +2,7 @@
 using HotelOpt.Domain.Entities;
 using HotelOpt.Application.Interfaces;
 using HotelOpt.Application.Pagination;
+using HotelOpt.Domain.Enums;
 
 namespace HotelOpt.Application.Services;
 
@@ -10,16 +11,22 @@ public class MaintenanceTicketService:IMaintenanceTicketService
     private readonly IRepository<MaintenanceTicket> _repository;
     private readonly ICurrentTenantService _currentTenantService;
     private readonly IIdentityService _identityService;
+    private readonly IRepository<Room> _roomRepository;
 
-    public MaintenanceTicketService(IRepository<MaintenanceTicket> repository, ICurrentTenantService currentTenantService, IIdentityService identityService)
+    public MaintenanceTicketService(IRepository<MaintenanceTicket> repository, ICurrentTenantService currentTenantService, IIdentityService identityService, IRepository<Room> roomRepository)
     {
         _repository = repository;
         _currentTenantService = currentTenantService;
         _identityService = identityService;
+        _roomRepository = roomRepository;
     }
     public async Task<bool> AddTicket(CreateMaintenanceTicketDto dto)
     {
         MaintenanceTicket newTicket = new MaintenanceTicket(dto.Title,dto.Description,dto.StaffId, dto.ReportedId, dto.Priority,dto.RoomId,dto.PropertyId,_currentTenantService.TenantId);
+        var room = await _roomRepository.GetById(dto.RoomId);
+        if (room == null) throw new Exception("Room was not found");
+        room.SetMaintenance();
+        await _roomRepository.Update(room);
         var result = await _repository.Add(newTicket);
         return result;
     }
@@ -95,16 +102,26 @@ public class MaintenanceTicketService:IMaintenanceTicketService
     public async Task Resolve(Guid id)
     {
         MaintenanceTicket ticket = await _repository.GetById(id);
+        var room = await _roomRepository.GetById(ticket.RoomId);
+        if (room == null) throw new Exception("Room is not found ");
+        room.SetAvailable();
         ticket.Resolve();
         await _repository.Update(ticket);
+        await _roomRepository.Update(room);
     }
 
     public async  Task Close(Guid id)
     {
         MaintenanceTicket ticket = await _repository.GetById(id);
+        var room = await _roomRepository.GetById(ticket.RoomId);
+        if (room == null) throw new Exception("Room is not found");
+        if (room.Status == RoomStatus.Maintenance)
+        {
+            room.SetAvailable();
+            await _roomRepository.Update(room);
+        }
         ticket.Close();
         await _repository.Update(ticket);
-
     }
 
     public async Task Reassign(Guid id, Guid staffId)

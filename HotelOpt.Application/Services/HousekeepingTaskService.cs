@@ -2,6 +2,7 @@
 using HotelOpt.Domain.Entities;
 using HotelOpt.Application.Interfaces;
 using HotelOpt.Application.Pagination;
+using HotelOpt.Domain.Enums;
 
 namespace HotelOpt.Application.Services;
 
@@ -11,13 +12,15 @@ public class HousekeepingTaskService:IHousekeepingTaskService
     private readonly ICurrentUserService _currentUserService;
     private readonly ICurrentTenantService _currentTenantService;
     private readonly IIdentityService _identityService;
+    private readonly IRepository<Room> _roomRepository;
 
-    public HousekeepingTaskService(IRepository<HouseKeepingTask> repository, ICurrentUserService currentUserService, ICurrentTenantService currentTenantService, IIdentityService identityService)
+    public HousekeepingTaskService(IRepository<HouseKeepingTask> repository, ICurrentUserService currentUserService, ICurrentTenantService currentTenantService, IIdentityService identityService,IRepository<Room> roomRepository)
     {
         _repository = repository;
         _currentUserService = currentUserService;
         _currentTenantService = currentTenantService;
         _identityService = identityService;
+        _roomRepository = roomRepository;
     }
     public async Task<bool> CreateTask(CreateHousekeepingTaskDto dto)
     {
@@ -86,21 +89,42 @@ public class HousekeepingTaskService:IHousekeepingTaskService
     public async Task StartTask(Guid id)
     {
         HouseKeepingTask task = await _repository.GetById(id);
+        var room = await _roomRepository.GetById(task.RoomId);
+        if (room == null) throw new Exception("Room is not found");
         task.Start();
+        if (room.Status != RoomStatus.Cleaning)
+        {
+            room.SetCleaning();
+            await _roomRepository.Update(room);
+        }
         await _repository.Update(task);
+        
 
     }
 
     public async Task CompleteTask(Guid id)
     {
         HouseKeepingTask task = await _repository.GetById(id);
+        var room = await _roomRepository.GetById(task.RoomId);
+        if (room == null) throw new Exception("Room is not found");
         task.Complete();
+        room.SetAvailable();
+        await _roomRepository.Update(room);
         await _repository.Update(task);
     }
 
     public async Task CancelTask(Guid id)
     {
         HouseKeepingTask task = await _repository.GetById(id);
+        if (task.Status == HouseKeepingTaskStatus.InProgress)
+        {
+            Room? room = await _roomRepository.GetById(task.RoomId);
+            if (room != null)
+            {
+                room.SetAvailable();
+                await _roomRepository.Update(room);
+            }
+        }
         task.Cancel();
         await _repository.Update(task);
     }

@@ -10,13 +10,15 @@ public class BookingService:IBookingService
 {
     private readonly IBookingRepository _repository;
     private readonly IRepository<Guest> _guestRepository;
+    private readonly IRepository<Room> _roomRepository;
     private readonly ICurrentTenantService _currentTenantService;
 
-    public BookingService(IBookingRepository repository, ICurrentTenantService currentTenantService, IRepository<Guest> guestRepository)
+    public BookingService(IBookingRepository repository, ICurrentTenantService currentTenantService, IRepository<Guest> guestRepository, IRepository<Room> roomRepository)
     {
         _repository = repository;
         _currentTenantService = currentTenantService;
         _guestRepository = guestRepository;
+        _roomRepository = roomRepository;
     }
     public async Task<BookingResponseDto> CreateAsync(CreateBookingDto dto)
     {
@@ -33,22 +35,38 @@ public class BookingService:IBookingService
     {
         Booking? booking = await _repository.GetById(bookingId);
         if (booking == null) throw new Exception("The booking is not found");
+        var room = await _roomRepository.GetById(booking.RoomId);
+        if (room == null) throw new Exception("Room is not found");
         booking.CheckIn();
+        room.SetOccupied();
         await _repository.Update(booking);
+        await _roomRepository.Update(room);
     }
 
     public async  Task CheckOutAsync(Guid bookingId)
     {
         Booking? booking = await _repository.GetById(bookingId);
         if (booking == null) throw new Exception("The booking is not found");
+        var room = await _roomRepository.GetById(booking.RoomId);
+        if (room == null) throw new Exception("Room is not found");
         booking.CheckOut();
+        room.SetCleaning();
         await _repository.Update(booking);
+        await _roomRepository.Update(room);
     }
 
     public async Task CancelAsync(Guid bookingId)
     {
         Booking? booking = await _repository.GetById(bookingId);
         if (booking == null) throw new Exception("The booking is not found");
+        if (booking.Status == BookingStatus.CheckedIn)
+        {
+            var room = await _roomRepository.GetById(booking.RoomId);
+            if (room == null) throw new Exception("Room is not found");
+            room.SetCleaning();
+            await _roomRepository.Update(room);
+        }
+
         booking.Cancel();
         await _repository.Update(booking);
     }

@@ -3,6 +3,7 @@ using HotelOpt.Application.DTOs;
 using HotelOpt.Domain.Entities;
 using HotelOpt.Application.Interfaces;
 using HotelOpt.Application.Pagination;
+using HotelOpt.Domain.Enums;
 
 namespace HotelOpt.Application.Services;
 
@@ -35,7 +36,7 @@ public class RoomService:IRoomService
         var validationResult = await _updateValidator.ValidateAsync(dto);
         if (!validationResult.IsValid) throw new ValidationException(validationResult.Errors);
         Room room = await _repository.GetById(dto.Id);
-        room.Update(dto.RoomNumber,dto.Description,dto.PropertyId,dto.Type,dto.Status);
+        room.Update(dto.RoomNumber,dto.Description,dto.PropertyId,dto.Type);
         await _repository.Update(room);
     }
 
@@ -46,9 +47,9 @@ public class RoomService:IRoomService
         return new PaginatedResult<RoomDto>(list,totalCount,pageSize,currentPage);
     }
 
-    public async Task<PaginatedResult<RoomDto>> GetAllRoomsByProperty(Guid propertyId, int pageSize, int currentPage)
+    public async Task<PaginatedResult<RoomDto>> GetAllRoomsByProperty(Guid propertyId, int pageSize, int currentPage, RoomStatus? status)
     {
-        var (response, totalCount) = await _repository.GetByConditionPaginated((r=>r.PropertyId==propertyId),currentPage, pageSize);
+        var (response, totalCount) = await _repository.GetByConditionPaginated((r=>r.PropertyId==propertyId &&(status==null || r.Status == status)),currentPage, pageSize);
         List<RoomDto> list = response.Select(r=>new RoomDto(r.Id,r.RoomNumber,r.Description,r.Status,r.Type,r.PropertyId,r.TenantId)).ToList();
         return new PaginatedResult<RoomDto>(list,totalCount,pageSize,currentPage);
     }

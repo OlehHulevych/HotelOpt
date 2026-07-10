@@ -6,5 +6,4 @@ public enum RoomStatus
     Occupied = 2,
     Cleaning = 3,
     Maintenance = 4,
-    OutOfOrder = 5
 }

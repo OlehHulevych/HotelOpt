@@ -31,19 +31,18 @@ public class Room:BaseEntity
         Description = description;
         PropertyId = propertyId;
         Type = type;
-        Status = RoomStatus.Cleaning;
+        Status = RoomStatus.Available;
         TenantId = tenantId;
     }
 
     
 
-    public void Update(string? roomNumber, string? description, Guid? propertyId, RoomType? type, RoomStatus? status)
+    public void Update(string? roomNumber, string? description, Guid? propertyId, RoomType? type)
     {
         RoomNumber = roomNumber ?? RoomNumber;
         Description = description ?? Description;
         PropertyId = propertyId ?? PropertyId;
         Type = type ?? Type;
-        Status = status ?? Status;
     }
 
     public void SetOccupied()
@@ -60,13 +59,13 @@ public class Room:BaseEntity
 
     public void SetAvailable()
     {
-        if (Status != RoomStatus.Cleaning || Status != RoomStatus.Maintenance) throw new Exception("The room is not cleaning or under maintenance");
+        if (Status != RoomStatus.Cleaning && Status != RoomStatus.Maintenance) throw new Exception("The room is not cleaning or under maintenance");
         Status = RoomStatus.Available;
     }
 
     public void SetMaintenance()
     {
-        if (Status != RoomStatus.Available || Status != RoomStatus.Occupied) throw new Exception("The room is not available for maintenance");
+        if (Status != RoomStatus.Available && Status != RoomStatus.Occupied) throw new Exception("The room is not available for maintenance");
         Status = RoomStatus.Maintenance;
     }
 
