@@ -25,14 +25,29 @@ public class AuthService:IAuthService
         return result;
     }
 
-    public async Task<string> Login(LoginDto dto)
+    public async Task<AuthResponseDto> Login(LoginDto dto)
     {
         var validationResult = await _loginValidator.ValidateAsync(dto);
         if (!validationResult.IsValid) throw new ValidationException(validationResult.Errors);
         var user = await _identityService.FindByEmail(dto.Email);
         bool checkPassword = await _identityService.CheckPassword(user.Id, dto.Password);
         if (!checkPassword) throw new Exception("Invalid password");
+        var refreshToken = await _identityService.GenerateAndSaveRefreshTokenAsync(user.Id);
         var token = _tokenService.CreateToken(user.TenantId, user.Id, user.FirstName + " " + user.SecondName, user.Email, user.Role);
-        return token;
+        return new AuthResponseDto(token, refreshToken);
+    }
+
+    public async Task<AuthResponseDto> RefreshAsync(string refreshToken)
+    {
+        var user = await _identityService.GetUserByRefreshTokenAsync(refreshToken);
+        if (user == null) throw new Exception("User is not found, invalid token");
+        var newRefreshToken = await _identityService.GenerateAndSaveRefreshTokenAsync(user.Id);
+        var newAccessToken =  _tokenService.CreateToken(user.TenantId, user.Id, user.FirstName + " "+user.SecondName, user.Email,user.Role);
+        return new AuthResponseDto(newAccessToken, newRefreshToken);
+    }
+
+    public async Task RevokeRefreshTokenAsync(Guid userId)
+    {
+        await _identityService.RevokeRefreshTokenAsync(userId);
     }
 }

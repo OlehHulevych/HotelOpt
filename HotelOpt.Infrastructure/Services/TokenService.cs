@@ -1,5 +1,6 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 using HotelOpt.Domain.Enums;
 using HotelOpt.Application.Interfaces;
@@ -41,5 +42,13 @@ public class TokenService:ITokenService
 
         return new JwtSecurityTokenHandler().WriteToken(token);
 
+    }
+
+    public string GenerateRefreshToken()
+    {
+        var randomByte = new byte[64];
+        using var rng = RandomNumberGenerator.Create();
+        rng.GetBytes(randomByte);
+        return Convert.ToBase64String(randomByte);
     }
 }

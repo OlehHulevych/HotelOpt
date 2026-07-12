@@ -11,5 +11,7 @@ public interface IIdentityService
     public Task UpdateAvatar(Guid id, string url);
     public Task<Dictionary<Guid, string>> GetUserNamesByIds(IEnumerable<Guid> ids);
     
-
+    Task<string> GenerateAndSaveRefreshTokenAsync(Guid userId);
+    Task<UserDto?> GetUserByRefreshTokenAsync(string refreshToken);
+    Task RevokeRefreshTokenAsync(Guid userId);
 }

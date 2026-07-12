@@ -34,18 +34,38 @@ public class AuthController:ControllerBase
     [HttpPost("login")]
     public async Task<IActionResult> LoginUser([FromBody] LoginDto data)
     {
-        var token = await _authService.Login(data);
-        if (String.IsNullOrEmpty(token)) return BadRequest("Failed to login user");
-        return Ok(new { message = "The user is log in successfully ", token });
+        AuthResponseDto? responseDto = await _authService.Login(data);
+        return Ok(new { message = "The user is log in successfully ", responseDto });
 
     }
+    [HttpPost("refresh")]
+    public async Task<IActionResult> Refresh([FromBody] string refreshToken)
+    {
+        var response = await _authService.RefreshAsync(refreshToken);
+        return Ok(new { message = "Token refreshed successfully", response });
+    }
+
+    [Authorize]
+    [HttpPost("revoke")]
+    public async Task<IActionResult> Revoke()
+    {
+        var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+        await _authService.RevokeRefreshTokenAsync(userId);
+        return Ok(new { message = "Token revoked successfully" });
+    }
+
     [Authorize]
     [HttpPost("avatar")]
     public async Task<IActionResult> UploadAvatar([FromForm] IFormFile file)
     {
         var url = await _storageService.UploadAsync(file.OpenReadStream(), file.FileName, file.ContentType, "avatars");
-        var userId  = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
-        await _identityService.UpdateAvatar(userId,url);
+        var value = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (value != null)
+        {
+            var userId  = Guid.Parse(value);
+            await _identityService.UpdateAvatar(userId,url);
+        }
+
         return Ok(new {message = "Your avatar was uploaded"});
     }
     

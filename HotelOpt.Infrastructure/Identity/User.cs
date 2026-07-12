@@ -14,6 +14,8 @@ public sealed class User : IdentityUser<Guid>
     public DateTimeOffset CreatedAt { get; private set; }
     public DateTimeOffset UpdatedAt { get; private set; }
     public UserRole Role { get; private set; }
+    public string? RefreshToken { get; private set; }
+    public DateTimeOffset RefreshTokenExpiresAt { get; private set; }
     
     public string? AvatarUrl { get; private set; }
 
@@ -43,5 +45,16 @@ public sealed class User : IdentityUser<Guid>
     public void SetAvatar(string avatarUrl)
     {
         AvatarUrl = avatarUrl;
+    }
+
+    public void SetRefreshToken(string token, DateTimeOffset expiresAt)
+    {
+        RefreshToken = token;
+        RefreshTokenExpiresAt = expiresAt;
+    }
+
+    public void RevokeRefreshToken()
+    {
+        RefreshToken = null;
     }
 }
