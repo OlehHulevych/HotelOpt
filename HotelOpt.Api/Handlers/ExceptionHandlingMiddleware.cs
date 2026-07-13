@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using HotelOpt.Application.Exceptions;
 
 namespace HotelOpt.Handlers;
 
@@ -21,6 +22,12 @@ public class ExceptionHandlingMiddleware
             context.Response.StatusCode = 400;
             context.Response.ContentType = "application/json";
             await context.Response.WriteAsJsonAsync(new { errors = ex.Errors.Select(e=>e.ErrorMessage) });
+        }
+        catch (UnauthorizedException ex)
+        {
+            context.Response.StatusCode = 401;
+            context.Response.ContentType = "application/json";
+            await context.Response.WriteAsJsonAsync(new { errors = ex.Message });
         }
         catch (Exception ex)
         {

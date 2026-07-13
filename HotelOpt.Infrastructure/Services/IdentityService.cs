@@ -1,4 +1,5 @@
-﻿using HotelOpt.Domain.Enums;
+﻿using HotelOpt.Application.Exceptions;
+using HotelOpt.Domain.Enums;
 using HotelOpt.Infrastructure.Identity;
 using HotelOpt.Application.DTOs;
 using HotelOpt.Application.Interfaces;
@@ -74,8 +75,8 @@ public class IdentityService:IIdentityService
     {
         
         User? user = await _userManager.Users.FirstOrDefaultAsync(u => u.RefreshToken == refreshToken);
-        if (user == null || user.Email == null) throw new Exception("User is not found");
-        if (user.RefreshTokenExpiresAt < DateTimeOffset.UtcNow) throw new Exception("Refresh token has expired");
+        if (user == null || user.Email == null) throw new UnauthorizedException("Invalid refresh token");
+        if (user.RefreshTokenExpiresAt < DateTimeOffset.UtcNow) throw new UnauthorizedException("Refresh token has expired");
         return new UserDto(user.FirstName, user.LastName, user.Email, user.Id, user.TenantId, user.Role);
     }
 
