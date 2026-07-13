@@ -53,9 +53,9 @@ public class BookingController : ControllerBase
     }
 
     [HttpGet("property/{propertyId:guid}")]
-    public async Task<IActionResult> GetByProperty(Guid propertyId, [FromQuery] int page = 1, [FromQuery] int pageSize = 10)
+    public async Task<IActionResult> GetByProperty(Guid propertyId,[FromQuery] BookingFilterDto filters, [FromQuery] int page = 1, [FromQuery] int pageSize = 10)
     {
-        var result = await _service.GetByPropertyAsync(propertyId, page, pageSize);
+        var result = await _service.GetByPropertyAsync(propertyId, page, pageSize,filters);
         return Ok(new { message = "Bookings fetched successfully", data = result });
     }
 }

@@ -1,4 +1,5 @@
-﻿using HotelOpt.Application.DTOs;
+﻿using System.Linq.Expressions;
+using HotelOpt.Application.DTOs;
 using HotelOpt.Domain.Entities;
 using HotelOpt.Application.Interfaces;
 using HotelOpt.Application.Pagination;
@@ -46,9 +47,13 @@ public class HousekeepingTaskService:IHousekeepingTaskService
         return dto;
     }
 
-    public async Task<PaginatedResult<HouseKeepingTaskDto>> GetAllTasks(int currentPage, int pageSize)
+    public async Task<PaginatedResult<HouseKeepingTaskDto>> GetAllTasks(int currentPage, int pageSize, HouseTaskFilterDto filters)
     {
-        (List<HouseKeepingTask> response, int totalCount) = await _repository.GetAllPaginated(currentPage,pageSize);
+        Expression<Func<HouseKeepingTask, bool>> predicate = t =>
+            (!filters.Status.HasValue || t.Status == filters.Status) &&
+            (!filters.ScheduledFrom.HasValue || t.ScheduledAt >= filters.ScheduledFrom) &&
+            (!filters.ScheduledTo.HasValue || t.ScheduledAt <= filters.ScheduledTo);
+        (List<HouseKeepingTask> response, int totalCount) = await _repository.GetByConditionPaginated(predicate,currentPage,pageSize);
         var idsTo = response.Select(task => task.AssignedToId).ToList();
         var idsBy = response.Select(task => task.AssignedById).ToList();
         var ids = idsTo.Concat(idsBy);
@@ -57,10 +62,15 @@ public class HousekeepingTaskService:IHousekeepingTaskService
         return new PaginatedResult<HouseKeepingTaskDto>(list,totalCount,pageSize,currentPage);
     }
 
-    public async Task<PaginatedResult<HouseKeepingTaskDto>> GetTaskByAssignedUser(Guid id, int currentPage, int pageSize)
+    public async Task<PaginatedResult<HouseKeepingTaskDto>> GetTaskByAssignedUser(Guid id, int currentPage, int pageSize,HouseTaskFilterDto filters)
     {
+        Expression<Func<HouseKeepingTask, bool>> predicate = t =>
+            t.AssignedToId == id &&
+            (!filters.Status.HasValue || t.Status == filters.Status) &&
+            (!filters.ScheduledFrom.HasValue || t.ScheduledAt >= filters.ScheduledFrom) &&
+            (!filters.ScheduledTo.HasValue || t.ScheduledAt <= filters.ScheduledTo);
         
-        (List<HouseKeepingTask> response,int totalCount) = await _repository.GetByConditionPaginated(e=>e.AssignedToId == id, currentPage, pageSize);
+        (List<HouseKeepingTask> response,int totalCount) = await _repository.GetByConditionPaginated(predicate, currentPage, pageSize);
         var idsTo = response.Select(task => task.AssignedToId).ToList();
         var idsBy = response.Select(task => task.AssignedById).ToList();
         var ids = idsTo.Concat(idsBy);
@@ -69,9 +79,13 @@ public class HousekeepingTaskService:IHousekeepingTaskService
         return new PaginatedResult<HouseKeepingTaskDto>(list,totalCount,pageSize,currentPage);
     }
 
-    public async Task<PaginatedResult<HouseKeepingTaskDto>> GetTasksByProperty(Guid id,int currentPage, int pageSize)
-    {
-        (List<HouseKeepingTask> response, int totalCount) = await _repository.GetByConditionPaginated(e=>e.PropertyId == id, currentPage, pageSize);
+    public async Task<PaginatedResult<HouseKeepingTaskDto>> GetTasksByProperty(Guid id,int currentPage, int pageSize, HouseTaskFilterDto filters)
+    {  Expression<Func<HouseKeepingTask, bool>> predicate = t =>
+            t.PropertyId ==id &&
+            (!filters.Status.HasValue || t.Status == filters.Status) &&
+            (!filters.ScheduledFrom.HasValue || t.ScheduledAt >= filters.ScheduledFrom) &&
+            (!filters.ScheduledTo.HasValue || t.ScheduledAt <= filters.ScheduledTo);
+        (List<HouseKeepingTask> response, int totalCount) = await _repository.GetByConditionPaginated(predicate, currentPage, pageSize);
         var idsTo = response.Select(task => task.AssignedToId).ToList();
         var idsBy = response.Select(task => task.AssignedById).ToList();
         var ids = idsTo.Concat(idsBy);
@@ -118,12 +132,9 @@ public class HousekeepingTaskService:IHousekeepingTaskService
         HouseKeepingTask task = await _repository.GetById(id);
         if (task.Status == HouseKeepingTaskStatus.InProgress)
         {
-            Room? room = await _roomRepository.GetById(task.RoomId);
-            if (room != null)
-            {
-                room.SetAvailable();
-                await _roomRepository.Update(room);
-            }
+            Room room = await _roomRepository.GetById(task.RoomId);
+            room.SetAvailable();
+            await _roomRepository.Update(room);
         }
         task.Cancel();
         await _repository.Update(task);

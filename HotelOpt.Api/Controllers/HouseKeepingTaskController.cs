@@ -33,9 +33,9 @@ public class HouseKeepingTaskController:ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetAll([FromQuery] int currentPage = 1, int pageSize = 10)
+    public async Task<IActionResult> GetAll([FromQuery] HouseTaskFilterDto filters, [FromQuery] int currentPage = 1, [FromQuery] int pageSize = 10)
     {
-        var data = await _service.GetAllTasks(currentPage, pageSize);
+        var data = await _service.GetAllTasks(currentPage, pageSize, filters);
         return Ok(new {message = "You fetched all tasks successfully", data});
     }
     [HttpGet("{id}")]
@@ -45,16 +45,16 @@ public class HouseKeepingTaskController:ControllerBase
         return Ok(new {message = $"Task {id} was fetched successfully", tasks});
     }
     [HttpGet("staff/{id}")]
-    public async Task<IActionResult> GetAllByAssignedId(Guid id, [FromQuery] int currentPage = 1, int pageSize= 10)
+    public async Task<IActionResult> GetAllByAssignedId(Guid id, [FromQuery] HouseTaskFilterDto filters, [FromQuery] int currentPage = 1, [FromQuery] int pageSize= 10)
     {
-        var data = await _service.GetTaskByAssignedUser(id, currentPage, pageSize);
+        var data = await _service.GetTaskByAssignedUser(id, currentPage, pageSize, filters);
         return Ok(new {message = "You fetched all tasks successfully", data});
     }
     
     [HttpGet("property/{id}")]
-    public async Task<IActionResult> GetAllByProperty(Guid id, [FromQuery] int currentPage = 1, int pageSize = 10)
+    public async Task<IActionResult> GetAllByProperty(Guid id,[FromQuery] HouseTaskFilterDto filters, [FromQuery]  int currentPage = 1,[FromQuery] int pageSize = 10)
     {
-        var data  = await _service.GetTasksByProperty(id, currentPage, pageSize);
+        var data  = await _service.GetTasksByProperty(id, currentPage, pageSize, filters);
         return Ok(new {message = "You fetched all tasks successfully", data});
     }
 

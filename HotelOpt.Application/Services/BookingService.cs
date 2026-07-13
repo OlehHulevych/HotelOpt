@@ -1,4 +1,5 @@
-﻿using HotelOpt.Application.DTOs;
+﻿using System.Linq.Expressions;
+using HotelOpt.Application.DTOs;
 using HotelOpt.Application.Interfaces;
 using HotelOpt.Application.Pagination;
 using HotelOpt.Domain.Entities;
@@ -85,9 +86,14 @@ public class BookingService:IBookingService
         
     }
 
-    public async Task<PaginatedResult<BookingResponseDto>> GetByPropertyAsync(Guid propertyId, int page, int pageSize)
+    public async Task<PaginatedResult<BookingResponseDto>> GetByPropertyAsync(Guid propertyId, int page, int pageSize, BookingFilterDto filters)
     {
-        (List<Booking> query, int total) = await _repository.GetByPropertyPaginated(propertyId,page, pageSize);
+        Expression<Func<Booking, bool>> predicate = t =>
+            t.PropertyId == propertyId &&
+            (!filters.Status.HasValue || t.Status == filters.Status) &&
+            (!filters.CheckInTo.HasValue || t.CheckInDate >= filters.CheckInFrom) &&
+            (!filters.CheckInTo.HasValue || t.CheckInDate <= filters.CheckInTo);
+        (List<Booking> query, int total) = await _repository.GetByConditionPaginated(predicate,page, pageSize);
         List<BookingResponseDto> list = query.Select(b => new BookingResponseDto(b.Id,b.RoomId,b.PropertyId,b.CheckInDate, b.CheckOutDate,b.Status.ToString(), b.Guests.Select(g=>$"{g.FirstName} {g.LastName}").ToList())).ToList();
         return new PaginatedResult<BookingResponseDto>(list, total, pageSize, page);
     }

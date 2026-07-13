@@ -10,5 +10,5 @@ public interface IBookingService
     Task CheckOutAsync(Guid bookingId);
     Task CancelAsync(Guid bookingId);
     Task AddGuestAsync(Guid bookingId, Guid guestId);
-    Task<PaginatedResult<BookingResponseDto>> GetByPropertyAsync(Guid propertyId, int page, int pageSize);
+    Task<PaginatedResult<BookingResponseDto>> GetByPropertyAsync(Guid propertyId, int page, int pageSize, BookingFilterDto filters);
 }

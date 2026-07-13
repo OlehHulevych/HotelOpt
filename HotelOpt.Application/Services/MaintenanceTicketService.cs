@@ -1,4 +1,5 @@
-﻿using HotelOpt.Application.DTOs;
+﻿using System.Linq.Expressions;
+using HotelOpt.Application.DTOs;
 using HotelOpt.Domain.Entities;
 using HotelOpt.Application.Interfaces;
 using HotelOpt.Application.Pagination;
@@ -38,9 +39,15 @@ public class MaintenanceTicketService:IMaintenanceTicketService
         await _repository.Update(ticketForUpdating);
     }
 
-    public async Task<PaginatedResult<MaintenanceTicketDto>> GetAll(int currentPage, int pageSize)
+    public async Task<PaginatedResult<MaintenanceTicketDto>> GetAll(int currentPage, int pageSize, MaintenanceTicketFilterDto filters)
     {
-        (List<MaintenanceTicket> query, int totalCount) = await _repository.GetAllPaginated(currentPage, pageSize);
+        Expression<Func<MaintenanceTicket, bool>> predicate = t =>
+            (!filters.Status.HasValue || filters.Status == t.Status) &&
+            (!filters.Priority.HasValue || filters.Priority == t.Priority) &&
+            (!filters.CreatedFrom.HasValue || filters.CreatedFrom <= t.CreatedAt) &&
+            (!filters.CreatedTo.HasValue || filters.CreatedTo >= t.CreatedAt);
+        
+        (List<MaintenanceTicket> query, int totalCount) = await _repository.GetByConditionPaginated(predicate,currentPage,pageSize);
         var idsStaff =  query.Select(t=>t.StaffId).ToList();
         var idsReported = query.Select(t => t.ReportedId).ToList();
         var ids = idsStaff.Concat(idsReported);
@@ -50,9 +57,15 @@ public class MaintenanceTicketService:IMaintenanceTicketService
         return new PaginatedResult<MaintenanceTicketDto>(list, totalCount, pageSize,currentPage);
     }
 
-    public async Task<PaginatedResult<MaintenanceTicketDto>> GetAllByProperty(Guid propertyId, int currentPage, int pageSize)
+    public async Task<PaginatedResult<MaintenanceTicketDto>> GetAllByProperty(Guid propertyId, int currentPage, int pageSize, MaintenanceTicketFilterDto filters)
     {
-        (List<MaintenanceTicket> query, int totalCount) = await _repository.GetByConditionPaginated((t=>t.PropertyId==propertyId),currentPage, pageSize);
+        Expression<Func<MaintenanceTicket, bool>> predicate = t =>
+            t.PropertyId==propertyId &&
+            (!filters.Status.HasValue || filters.Status == t.Status) &&
+            (!filters.Priority.HasValue || filters.Priority == t.Priority) &&
+            (!filters.CreatedFrom.HasValue || filters.CreatedFrom <= t.CreatedAt) &&
+            (!filters.CreatedTo.HasValue || filters.CreatedTo >= t.CreatedAt);
+        (List<MaintenanceTicket> query, int totalCount) = await _repository.GetByConditionPaginated(predicate,currentPage, pageSize);
         var idsStaff =  query.Select(t=>t.StaffId).ToList();
         var idsReported = query.Select(t => t.ReportedId).ToList();
         var ids = idsStaff.Concat(idsReported);
@@ -61,9 +74,15 @@ public class MaintenanceTicketService:IMaintenanceTicketService
         return new PaginatedResult<MaintenanceTicketDto>(list, totalCount, pageSize,currentPage);
     }
 
-    public async Task<PaginatedResult<MaintenanceTicketDto>> GetByStaffId(Guid staffId, int currentPage, int pageSize)
+    public async Task<PaginatedResult<MaintenanceTicketDto>> GetByStaffId(Guid staffId, int currentPage, int pageSize, MaintenanceTicketFilterDto filters)
     {
-        (List<MaintenanceTicket> query, int totalCount) = await _repository.GetByConditionPaginated((t=>t.StaffId==staffId),currentPage, pageSize);
+        Expression<Func<MaintenanceTicket, bool>> predicate = t =>
+            t.StaffId == staffId &&
+            (!filters.Status.HasValue || filters.Status == t.Status) &&
+            (!filters.Priority.HasValue || filters.Priority == t.Priority) &&
+            (!filters.CreatedFrom.HasValue || filters.CreatedFrom <= t.CreatedAt) &&
+            (!filters.CreatedTo.HasValue || filters.CreatedTo >= t.CreatedAt);
+        (List<MaintenanceTicket> query, int totalCount) = await _repository.GetByConditionPaginated(predicate,currentPage, pageSize);
         var idsStaff =  query.Select(t=>t.StaffId).ToList();
         var idsReported = query.Select(t => t.ReportedId).ToList();
         var ids = idsStaff.Concat(idsReported);
@@ -72,9 +91,15 @@ public class MaintenanceTicketService:IMaintenanceTicketService
         return new PaginatedResult<MaintenanceTicketDto>(list, totalCount, pageSize,currentPage);
     }
 
-    public async Task<PaginatedResult<MaintenanceTicketDto>> GetAllByRoom(Guid roomId, int currentPage, int pageSize)
+    public async Task<PaginatedResult<MaintenanceTicketDto>> GetAllByRoom(Guid roomId, int currentPage, int pageSize, MaintenanceTicketFilterDto filters)
     {
-        (List<MaintenanceTicket> query, int totalCount) = await _repository.GetByConditionPaginated((t=>t.RoomId == roomId),currentPage, pageSize);
+        Expression<Func<MaintenanceTicket, bool>> predicate = t =>
+            t.RoomId == roomId &&
+            (!filters.Status.HasValue || filters.Status == t.Status) &&
+            (!filters.Priority.HasValue || filters.Priority == t.Priority) &&
+            (!filters.CreatedFrom.HasValue || filters.CreatedFrom <= t.CreatedAt) &&
+            (!filters.CreatedTo.HasValue || filters.CreatedTo >= t.CreatedAt);
+        (List<MaintenanceTicket> query, int totalCount) = await _repository.GetByConditionPaginated(predicate,currentPage, pageSize);
         var idsStaff =  query.Select(t=>t.StaffId).ToList();
         var idsReported = query.Select(t => t.ReportedId).ToList();
         var ids = idsStaff.Concat(idsReported);
