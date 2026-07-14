@@ -29,6 +29,12 @@ public class ExceptionHandlingMiddleware
             context.Response.ContentType = "application/json";
             await context.Response.WriteAsJsonAsync(new { errors = ex.Message });
         }
+        catch (NotFoundException ex)
+        {
+            context.Response.StatusCode = 404;
+            context.Response.ContentType = "application/json";
+            await context.Response.WriteAsJsonAsync(new { errors = ex.Message });
+        }
         catch (Exception ex)
         {
             context.Response.StatusCode = 500;

@@ -31,7 +31,7 @@ public class IdentityService:IIdentityService
     public async Task<UserDto> FindByEmail(string email)
     {
         var user = await _userManager.FindByEmailAsync(email);
-        if (user == null || user.Email == null  ) throw new Exception("User is not found");
+        if (user == null || user.Email == null  ) throw new NotFoundException("User is not found");
         UserDto newDto = new UserDto(user.FirstName, user.LastName, user.Email,user.Id, user.TenantId, user.Role);
         return newDto;
     }
@@ -39,7 +39,7 @@ public class IdentityService:IIdentityService
     public async Task<bool> CheckPassword(Guid id, string password)
     {
         var user = await _userManager.FindByIdAsync(id.ToString());
-        if (user == null) throw new Exception("User is not found");
+        if (user == null) throw new NotFoundException("User is not found");
         bool checkPassword = await _userManager.CheckPasswordAsync(user, password);
         return checkPassword;
     }
@@ -47,7 +47,7 @@ public class IdentityService:IIdentityService
     public async Task UpdateAvatar(Guid id, string url)
     {
         var user = await _userManager.FindByIdAsync(id.ToString());
-        if (user == null) throw new Exception("User is not found");
+        if (user == null) throw new NotFoundException("User is not found");
         user.SetAvatar(url);
         await _userManager.UpdateAsync(user);
 
@@ -64,7 +64,7 @@ public class IdentityService:IIdentityService
     public async Task<string> GenerateAndSaveRefreshTokenAsync(Guid userId)
     {
         User? user = await _userManager.FindByIdAsync(userId.ToString());
-        if (user == null) throw new Exception($"The user {userId} is not found");
+        if (user == null) throw new NotFoundException($"User {userId} is not found");
         var newToken = _tokenService.GenerateRefreshToken();
         user.SetRefreshToken(newToken, DateTimeOffset.UtcNow.AddDays(7));
         await _userManager.UpdateAsync(user);
@@ -83,7 +83,7 @@ public class IdentityService:IIdentityService
     public async Task RevokeRefreshTokenAsync(Guid userId)
     {
         User? user = await _userManager.FindByIdAsync(userId.ToString());
-        if (user == null || user.Email == null) throw new Exception("The user is not found");
+        if (user == null || user.Email == null) throw new NotFoundException("User is not found");
         user.RevokeRefreshToken();
         await _userManager.UpdateAsync(user);
     }

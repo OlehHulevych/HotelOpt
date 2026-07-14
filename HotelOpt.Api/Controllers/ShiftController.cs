@@ -68,7 +68,11 @@ public class ShiftController:ControllerBase
         var list = await _service.GetShiftByStaff(id, currentPage, pageSize);
         return Ok(new { message = "All shifts were fetched", list });
     }
-    
-    
-    
+
+    [HttpGet("{id}/report")]
+    public async Task<IActionResult> GetReport(Guid id)
+    {
+        var report = await _service.GetReportAsync(id);
+        return Ok(new { message = $"Report for shift {id} fetched successfully", report });
+    }
 }

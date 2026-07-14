@@ -25,7 +25,6 @@ public class MaintenanceTicketService:IMaintenanceTicketService
     {
         MaintenanceTicket newTicket = new MaintenanceTicket(dto.Title,dto.Description,dto.StaffId, dto.ReportedId, dto.Priority,dto.RoomId,dto.PropertyId,_currentTenantService.TenantId);
         var room = await _roomRepository.GetById(dto.RoomId);
-        if (room == null) throw new Exception("Room was not found");
         room.SetMaintenance();
         await _roomRepository.Update(room);
         var result = await _repository.Add(newTicket);
@@ -128,7 +127,6 @@ public class MaintenanceTicketService:IMaintenanceTicketService
     {
         MaintenanceTicket ticket = await _repository.GetById(id);
         var room = await _roomRepository.GetById(ticket.RoomId);
-        if (room == null) throw new Exception("Room is not found ");
         room.SetAvailable();
         ticket.Resolve();
         await _repository.Update(ticket);
@@ -139,7 +137,6 @@ public class MaintenanceTicketService:IMaintenanceTicketService
     {
         MaintenanceTicket ticket = await _repository.GetById(id);
         var room = await _roomRepository.GetById(ticket.RoomId);
-        if (room == null) throw new Exception("Room is not found");
         if (room.Status == RoomStatus.Maintenance)
         {
             room.SetAvailable();

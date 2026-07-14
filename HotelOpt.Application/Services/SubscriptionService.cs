@@ -22,8 +22,7 @@ public class SubscriptionService:ISubscriptionService
     }
     public async Task SubscribeAsync(Guid tenantId, SubscriptionPlan plan, string priceId)
     {
-        Tenant? tenant = await _repository.GetById(tenantId);
-        if (tenant == null) throw new Exception("Tenant is not found");
+        Tenant tenant = await _repository.GetById(tenantId);
         string customerId = await _stripeService.CreateCustomerAsync(tenant.ContactEmail, tenant.Name);
         string subscriptionId = await _stripeService.CreatSubscriptionAsync(customerId, priceId);
         tenant.SetSubscription(customerId, subscriptionId, plan);
@@ -32,8 +31,7 @@ public class SubscriptionService:ISubscriptionService
 
     public async Task CancelAsync(Guid tenantId)
     {
-        Tenant? tenant = await _repository.GetById(tenantId);
-        if (tenant == null) throw new Exception("Tenant is not found");
+        Tenant tenant = await _repository.GetById(tenantId);
         if (tenant.StripeSubscriptionId == null) throw new Exception("No active subscription");
         await _stripeService.CancelSubscriptionAsync(tenant.StripeSubscriptionId);
         tenant.UpdateSubscriptionStatus(SubscriptionStatus.Cancelled);

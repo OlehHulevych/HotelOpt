@@ -12,4 +12,5 @@ public interface IShiftService
     public Task<ShiftDto> GetShiftById(Guid id);
     public Task<PaginatedResult<ShiftDto>> GetShiftByStaff(Guid id, int currentPage, int pageSize);
     public Task<bool> DeleteShift(Guid id);
+    public Task<ShiftReportDto> GetReportAsync(Guid shiftId);
 }

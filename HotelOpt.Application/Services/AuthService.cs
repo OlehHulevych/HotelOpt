@@ -40,7 +40,6 @@ public class AuthService:IAuthService
     public async Task<AuthResponseDto> RefreshAsync(string refreshToken)
     {
         var user = await _identityService.GetUserByRefreshTokenAsync(refreshToken);
-        if (user == null) throw new Exception("User is not found, invalid token");
         var newRefreshToken = await _identityService.GenerateAndSaveRefreshTokenAsync(user.Id);
         var newAccessToken =  _tokenService.CreateToken(user.TenantId, user.Id, user.FirstName + " "+user.SecondName, user.Email,user.Role);
         return new AuthResponseDto(newAccessToken, newRefreshToken);

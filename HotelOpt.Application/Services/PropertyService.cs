@@ -28,8 +28,7 @@ public class PropertyService:IPropertyService
     {
         var validResult = await _createValidator.ValidateAsync(dto);
         if (!validResult.IsValid) throw new ValidationException(validResult.Errors);
-        Tenant? tenant = await _tenantRepository.GetById(_currentTenantService.TenantId);
-        if (tenant == null) throw new Exception("Tenant is not found");
+        Tenant tenant = await _tenantRepository.GetById(_currentTenantService.TenantId);
         var properties = await _repository.GetByCondition(p=>p.TenantId==tenant.Id);
         int count = properties.Count;
         if (tenant.SubscriptionPlan == SubscriptionPlan.Trial)

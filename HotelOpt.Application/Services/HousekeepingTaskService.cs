@@ -104,7 +104,6 @@ public class HousekeepingTaskService:IHousekeepingTaskService
     {
         HouseKeepingTask task = await _repository.GetById(id);
         var room = await _roomRepository.GetById(task.RoomId);
-        if (room == null) throw new Exception("Room is not found");
         task.Start();
         if (room.Status != RoomStatus.Cleaning)
         {
@@ -120,7 +119,6 @@ public class HousekeepingTaskService:IHousekeepingTaskService
     {
         HouseKeepingTask task = await _repository.GetById(id);
         var room = await _roomRepository.GetById(task.RoomId);
-        if (room == null) throw new Exception("Room is not found");
         task.Complete();
         room.SetAvailable();
         await _roomRepository.Update(room);

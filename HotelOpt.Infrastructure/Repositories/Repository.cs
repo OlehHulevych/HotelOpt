@@ -1,4 +1,5 @@
 ﻿using System.Linq.Expressions;
+using HotelOpt.Application.Exceptions;
 using HotelOpt.Domain.Common;
 using HotelOpt.Infrastructure.Data;
 using HotelOpt.Application.Interfaces;
@@ -23,7 +24,7 @@ public class Repository<T>:IRepository<T> where T:BaseEntity
     public async Task<T> GetById(Guid id)
     {
         T? entity = await _context.Set<T>().FindAsync(id);
-        if (entity == null) throw new Exception("Failed to find your entity");
+        if (entity == null) throw new NotFoundException($"{typeof(T).Name} {id} was not found");
         return entity;
 
     }

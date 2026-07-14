@@ -36,10 +36,8 @@ public class BookingService:IBookingService
 
     public async Task CheckInAsync(Guid bookingId)
     {
-        Booking? booking = await _repository.GetById(bookingId);
-        if (booking == null) throw new Exception("The booking is not found");
+        Booking booking = await _repository.GetById(bookingId);
         var room = await _roomRepository.GetById(booking.RoomId);
-        if (room == null) throw new Exception("Room is not found");
         booking.CheckIn();
         room.SetOccupied();
         await _repository.Update(booking);
@@ -48,10 +46,8 @@ public class BookingService:IBookingService
 
     public async  Task CheckOutAsync(Guid bookingId)
     {
-        Booking? booking = await _repository.GetById(bookingId);
-        if (booking == null) throw new Exception("The booking is not found");
+        Booking booking = await _repository.GetById(bookingId);
         var room = await _roomRepository.GetById(booking.RoomId);
-        if (room == null) throw new Exception("Room is not found");
         booking.CheckOut();
         room.SetCleaning();
         await _repository.Update(booking);
@@ -61,12 +57,10 @@ public class BookingService:IBookingService
 
     public async Task CancelAsync(Guid bookingId)
     {
-        Booking? booking = await _repository.GetById(bookingId);
-        if (booking == null) throw new Exception("The booking is not found");
+        Booking booking = await _repository.GetById(bookingId);
         if (booking.Status == BookingStatus.CheckedIn)
         {
             var room = await _roomRepository.GetById(booking.RoomId);
-            if (room == null) throw new Exception("Room is not found");
             room.SetCleaning();
             await _roomRepository.Update(room);
         }
@@ -77,10 +71,8 @@ public class BookingService:IBookingService
 
     public async Task AddGuestAsync(Guid bookingId, Guid guestId)
     {
-        Booking? booking = await _repository.GetById(bookingId);
-        if (booking == null) throw new Exception($"The booking {bookingId} was not found");
-        Guest? guest = await _guestRepository.GetById(guestId);
-        if(guest==null) throw new Exception($"The Guest {guestId} was not found");
+        Booking booking = await _repository.GetById(bookingId);
+        Guest guest = await _guestRepository.GetById(guestId);
         booking.AddGuest(guest);
         await _repository.Update(booking);
         
@@ -91,7 +83,7 @@ public class BookingService:IBookingService
         Expression<Func<Booking, bool>> predicate = t =>
             t.PropertyId == propertyId &&
             (!filters.Status.HasValue || t.Status == filters.Status) &&
-            (!filters.CheckInTo.HasValue || t.CheckInDate >= filters.CheckInFrom) &&
+            (!filters.CheckInFrom.HasValue || t.CheckInDate >= filters.CheckInFrom) &&
             (!filters.CheckInTo.HasValue || t.CheckInDate <= filters.CheckInTo);
         (List<Booking> query, int total) = await _repository.GetByConditionPaginated(predicate,page, pageSize);
         List<BookingResponseDto> list = query.Select(b => new BookingResponseDto(b.Id,b.RoomId,b.PropertyId,b.CheckInDate, b.CheckOutDate,b.Status.ToString(), b.Guests.Select(g=>$"{g.FirstName} {g.LastName}").ToList())).ToList();

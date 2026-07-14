@@ -1,4 +1,5 @@
 ﻿using HotelOpt.Application.DTOs;
+using HotelOpt.Application.Exceptions;
 using HotelOpt.Application.Interfaces;
 using HotelOpt.Domain.Entities;
 
@@ -19,7 +20,7 @@ public class InvoiceService:IInvoiceService
     public async Task GenerateAsync(Guid bookingId)
     {
         Booking? booking = await _bookingRepository.GetByIdWithIncludes(bookingId,b=>b.Room, b=>b.Guests);
-        if (booking == null) throw new Exception("Booking was not found");
+        if (booking == null) throw new NotFoundException($"Booking {bookingId} was not found");
         List<Guest> bookingGuests = booking!.Guests.ToList();
         Invoice newInvoice = new Invoice(booking.Id, booking.RoomId,bookingGuests[0].FirstName + " " + bookingGuests[0].LastName,
             booking.CheckInDate, booking.CheckOutDate,booking.TenantId, booking.Room.PricePerNight );
@@ -30,7 +31,7 @@ public class InvoiceService:IInvoiceService
     public async Task<InvoiceDto> GetByBookingAsync(Guid bookingId)
     {
         Invoice? invoice = await _invoiceRepository.GetSingleByCondition(i=>i.BookingId == bookingId);
-        if (invoice == null) throw new Exception("Invoice was not found");
+        if (invoice == null) throw new NotFoundException($"Invoice for booking {bookingId} was not found");
         return new InvoiceDto(invoice.Id, invoice.BookingId,invoice.RoomId,invoice.GuestName,invoice.CheckInDate,
             invoice.CheckOutDate,invoice.Nights,invoice.PricePerNight,invoice.TotalAmount,invoice.IssuedAt,invoice.Status);
     }
