@@ -37,7 +37,8 @@ public class BookingController : ControllerBase
         await _service.CheckOutAsync(id);
         return Ok(new { message = $"Booking {id} checked out" });
     }
-
+    
+    [Authorize(Roles = "Manager")]
     [HttpPost("{id:guid}/cancel")]
     public async Task<IActionResult> Cancel(Guid id)
     {

@@ -63,7 +63,7 @@ public class MaintenanceController:ControllerBase
         var data  = await _service.GetAllByRoom(id, currentPage, pageSize, filters);
         return Ok(new {message = "You fetched all tickets successfully", data});
     }
-
+    [Authorize(Roles = "Manager")]
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteResult(Guid id)
     {
@@ -87,7 +87,7 @@ public class MaintenanceController:ControllerBase
         return Ok(new {message = $"The ticket {id} is closed"});
     }
     
-
+    [Authorize(Roles = "Manager")]
     [HttpPatch("reassign/{id}")]
     public async Task<IActionResult> Reassign([FromQuery] Guid staffId, Guid id)
     {

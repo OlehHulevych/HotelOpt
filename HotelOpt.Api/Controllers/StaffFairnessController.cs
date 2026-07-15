@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HotelOpt.Controllers;
-[Authorize]
+[Authorize(Roles = "Manager")]
 [Route("api/fairness")]
 [ApiController]
 public class StaffFairnessController:ControllerBase

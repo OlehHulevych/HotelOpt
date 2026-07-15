@@ -16,7 +16,7 @@ public class PropertyController:ControllerBase
     {
         _propertyService = propertyService;
     }
-
+    [Authorize(Roles = "Manager")]
     [HttpPost]
     public async Task<IActionResult> Add([FromBody] CreatePropertyDto dto)
     {
@@ -39,14 +39,14 @@ public class PropertyController:ControllerBase
         PropertyDto property = await _propertyService.GetPropertyById(id);
         return Ok(new {message = "Your property was fetched successfully", property});
     }
-
+    [Authorize(Roles = "Manager")]
     [HttpPut]
     public async Task<IActionResult> Update([FromBody] UpdatePropertyDto data)
     {
          await _propertyService.UpdateProperty(data);
          return Ok(new {message="Property was updated"});
     }
-    
+    [Authorize(Roles = "Manager")]
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(Guid id)
     {

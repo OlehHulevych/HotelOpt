@@ -17,7 +17,7 @@ public class ShiftController:ControllerBase
     {
         _service = service;
     }
-
+    [Authorize(Roles = "Manager")]
     [HttpPost]
     public async Task<IActionResult> Add([FromBody] CreateShiftDto dto)
     {
@@ -25,14 +25,14 @@ public class ShiftController:ControllerBase
         if (!result) return BadRequest(new {message = "Failed to create new shift", result });
         return Ok(new {message = "The shift was created", result});
     }
-
+    [Authorize(Roles = "Manager")]
     [HttpPut]
     public async Task<IActionResult> Update([FromBody] UpdateShiftDto dto)
     {
         await _service.UpdateShift(dto);
         return Ok(new { message = "shift was updated" });
     }
-
+    [Authorize(Roles = "Manager")]
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(Guid id)
     {

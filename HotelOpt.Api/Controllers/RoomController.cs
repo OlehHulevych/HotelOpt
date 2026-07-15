@@ -16,7 +16,7 @@ public class RoomController:ControllerBase
     {
         _roomService = roomService;
     }
-    
+    [Authorize(Roles = "Manager")]
     [HttpPost]
     public async Task<IActionResult> Add([FromBody] CreateRoomDto dto)
     {
@@ -47,14 +47,14 @@ public class RoomController:ControllerBase
         if (room == null) return BadRequest(new {message=$"Failed to get your room {id}"});
         return Ok(new {message = "Your room was fetched successfully", room});
     }
-
+    [Authorize(Roles = "Manager")]
     [HttpPut]
     public async Task<IActionResult> Update([FromBody] UpdateRoomDto data)
     {
         await _roomService.UpdateRoom(data);
         return Ok(new {message="room was updated"});
     }
-    
+    [Authorize(Roles = "Manager")]
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(Guid id)
     {

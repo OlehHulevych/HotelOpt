@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace HotelOpt.Controllers;
 
-[Authorize]
+[Authorize(Roles = "Manager")]
 [ApiController]
 [Route("api/invoices")]
 public class InvoiceController : ControllerBase

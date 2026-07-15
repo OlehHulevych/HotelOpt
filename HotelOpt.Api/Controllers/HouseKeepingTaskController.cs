@@ -64,7 +64,7 @@ public class HouseKeepingTaskController:ControllerBase
         await _service.StartTask(id);
         return Ok(new {message = $"Task {id} is started"});
     }
-    
+    [Authorize(Roles = "Manager")]
     [HttpPatch("cancel/{id}")]
     public async Task<IActionResult> Cancel(Guid id)
     {
@@ -78,7 +78,7 @@ public class HouseKeepingTaskController:ControllerBase
         await _service.CompleteTask(id);
         return Ok(new {message = $"Task {id} is completed"});
     }
-
+    [Authorize(Roles = "Manager")]
     [HttpPatch("reassign/{id}")]
     public async Task<IActionResult> Reassign([FromQuery] Guid staffId, Guid id)
     {

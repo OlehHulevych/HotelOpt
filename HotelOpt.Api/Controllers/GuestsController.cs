@@ -45,7 +45,7 @@ public class GuestsController : ControllerBase
         var guest = await _service.GetById(id);
         return Ok(new { message = $"Guest {id} fetched successfully", guest });
     }
-
+    [Authorize(Roles = "Manager")]
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(Guid id)
     {
