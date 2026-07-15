@@ -44,7 +44,10 @@ public class Repository<T>:IRepository<T> where T:BaseEntity
 
     public async Task<bool> Delete(Guid id)
     {
-        await _context.Set<T>().Where(e=>e.Id ==id).ExecuteDeleteAsync();
+        T? entity = await _context.Set<T>().FindAsync(id);
+        if (entity == null) return false;
+        entity.Delete();
+        await _context.SaveChangesAsync();
         return true;
     }
 

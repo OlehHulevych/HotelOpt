@@ -31,19 +31,19 @@ public class AppDbContext:IdentityDbContext<User, IdentityRole<Guid>, Guid>
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
-        builder.Entity<Booking>().HasQueryFilter(b => b.TenantId == _currentTenantService.TenantId);
-        builder.Entity<Guest>().HasQueryFilter(g => g.TenantId == _currentTenantService.TenantId);
-        builder.Entity<RoomPhoto>().HasQueryFilter(rp=>rp.TenantId == _currentTenantService.TenantId);
+        builder.Entity<Booking>().HasQueryFilter(b => b.TenantId == _currentTenantService.TenantId && !b.IsDeleted);
+        builder.Entity<Guest>().HasQueryFilter(g => g.TenantId == _currentTenantService.TenantId && !g.IsDeleted);
+        builder.Entity<RoomPhoto>().HasQueryFilter(rp=>rp.TenantId == _currentTenantService.TenantId && !rp.IsDeleted);
         builder.Entity<User>().HasQueryFilter(u =>_currentTenantService.TenantId == Guid.Empty || u.TenantId == _currentTenantService.TenantId);
-        builder.Entity<RoomInspection>().HasQueryFilter(i=>i.TenantId==_currentTenantService.TenantId);
-        builder.Entity<Tenant>().HasQueryFilter(t => t.Id == _currentTenantService.TenantId);
-        builder.Entity<Property>().HasQueryFilter(p => p.TenantId == _currentTenantService.TenantId);
-        builder.Entity<Room>().HasQueryFilter(r => r.TenantId == _currentTenantService.TenantId);
-        builder.Entity<HouseKeepingTask>().HasQueryFilter(t => t.TenantId == _currentTenantService.TenantId);
-        builder.Entity<Shift>().HasQueryFilter(s => s.TenantId == _currentTenantService.TenantId);
-        builder.Entity<MaintenanceTicket>().HasQueryFilter(t => t.TenantId == _currentTenantService.TenantId);
-        builder.Entity<Message>().HasQueryFilter(m => m.TenantId == _currentTenantService.TenantId);
-        builder.Entity<Invoice>().HasQueryFilter(i => i.TenantId == _currentTenantService.TenantId);
+        builder.Entity<RoomInspection>().HasQueryFilter(i=>i.TenantId==_currentTenantService.TenantId && !i.IsDeleted);
+        builder.Entity<Tenant>().HasQueryFilter(t => t.Id == _currentTenantService.TenantId && !t.IsDeleted);
+        builder.Entity<Property>().HasQueryFilter(p => p.TenantId == _currentTenantService.TenantId && !p.IsDeleted);
+        builder.Entity<Room>().HasQueryFilter(r => r.TenantId == _currentTenantService.TenantId && !r.IsDeleted);
+        builder.Entity<HouseKeepingTask>().HasQueryFilter(t => t.TenantId == _currentTenantService.TenantId && !t.IsDeleted);
+        builder.Entity<Shift>().HasQueryFilter(s => s.TenantId == _currentTenantService.TenantId && !s.IsDeleted);
+        builder.Entity<MaintenanceTicket>().HasQueryFilter(t => t.TenantId == _currentTenantService.TenantId && !t.IsDeleted);
+        builder.Entity<Message>().HasQueryFilter(m => m.TenantId == _currentTenantService.TenantId && !m.IsDeleted);
+        builder.Entity<Invoice>().HasQueryFilter(i => i.TenantId == _currentTenantService.TenantId && !i.IsDeleted);
 
         builder.Entity<Property>().HasOne(p => p.Tenant)
             .WithMany().HasForeignKey(p => p.TenantId).OnDelete(DeleteBehavior.ClientSetNull);
