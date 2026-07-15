@@ -87,4 +87,11 @@ public class IdentityService:IIdentityService
         user.RevokeRefreshToken();
         await _userManager.UpdateAsync(user);
     }
+
+    public async Task<string?> GetUserEmailAsync(Guid userId)
+    {
+        User? user = await _userManager.FindByIdAsync(userId.ToString());
+        if (user == null || string.IsNullOrEmpty(user.Email)) throw new Exception("The user is not found");
+        return user.Email;
+    }
 }

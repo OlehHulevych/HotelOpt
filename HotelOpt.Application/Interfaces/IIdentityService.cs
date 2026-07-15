@@ -14,4 +14,5 @@ public interface IIdentityService
     Task<string> GenerateAndSaveRefreshTokenAsync(Guid userId);
     Task<UserDto?> GetUserByRefreshTokenAsync(string refreshToken);
     Task RevokeRefreshTokenAsync(Guid userId);
+    Task<string?> GetUserEmailAsync(Guid userId);
 }
