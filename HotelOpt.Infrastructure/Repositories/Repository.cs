@@ -64,9 +64,11 @@ public class Repository<T>:IRepository<T> where T:BaseEntity
         return (list, totalCount);
     }
 
-    public async Task<(List<T> Items, int TotalCount)> GetByConditionPaginated(Expression<Func<T, bool>> predicate, int page, int pageSize)
+    public async Task<(List<T> Items, int TotalCount)> GetByConditionPaginated(Expression<Func<T, bool>> predicate, int page, int pageSize, Expression<Func<T, object>>? orderBy = null, bool descending = false)
     {
         var query = _context.Set<T>().Where(predicate);
+        if (orderBy != null)
+            query = descending ? query.OrderByDescending(orderBy) : query.OrderBy(orderBy);
         int totalCount = await query.CountAsync();
         List<T> list = await query.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
         return (list, totalCount) ;

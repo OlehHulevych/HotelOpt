@@ -85,7 +85,14 @@ public class BookingService:IBookingService
             (!filters.Status.HasValue || t.Status == filters.Status) &&
             (!filters.CheckInFrom.HasValue || t.CheckInDate >= filters.CheckInFrom) &&
             (!filters.CheckInTo.HasValue || t.CheckInDate <= filters.CheckInTo);
-        (List<Booking> query, int total) = await _repository.GetByConditionPaginated(predicate,page, pageSize);
+        Expression<Func<Booking, object>>? orderBy = filters.SortBy switch
+        {
+            "checkIn" => b => b.CheckInDate,
+            "checkOut" => b => b.CheckOutDate,
+            "status" => b=> b.Status,
+            _ => null
+        };
+        (List<Booking> query, int total) = await _repository.GetByConditionPaginated(predicate,page, pageSize, orderBy,filters.SortDescending );
         List<BookingResponseDto> list = query.Select(b => new BookingResponseDto(b.Id,b.RoomId,b.PropertyId,b.CheckInDate, b.CheckOutDate,b.Status.ToString(), b.Guests.Select(g=>$"{g.FirstName} {g.LastName}").ToList())).ToList();
         return new PaginatedResult<BookingResponseDto>(list, total, pageSize, page);
     }

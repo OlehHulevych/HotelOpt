@@ -53,7 +53,13 @@ public class HousekeepingTaskService:IHousekeepingTaskService
             (!filters.Status.HasValue || t.Status == filters.Status) &&
             (!filters.ScheduledFrom.HasValue || t.ScheduledAt >= filters.ScheduledFrom) &&
             (!filters.ScheduledTo.HasValue || t.ScheduledAt <= filters.ScheduledTo);
-        (List<HouseKeepingTask> response, int totalCount) = await _repository.GetByConditionPaginated(predicate,currentPage,pageSize);
+        Expression<Func<HouseKeepingTask, object>>? orderBy = filters.SortBy switch
+        {
+            "scheduledAt" => t => t.ScheduledAt,
+            "status" => t => t.Status,
+            _ => null
+        };
+        (List<HouseKeepingTask> response, int totalCount) = await _repository.GetByConditionPaginated(predicate,currentPage,pageSize,orderBy,filters.SortDescending);
         var idsTo = response.Select(task => task.AssignedToId).ToList();
         var idsBy = response.Select(task => task.AssignedById).ToList();
         var ids = idsTo.Concat(idsBy);
@@ -69,8 +75,13 @@ public class HousekeepingTaskService:IHousekeepingTaskService
             (!filters.Status.HasValue || t.Status == filters.Status) &&
             (!filters.ScheduledFrom.HasValue || t.ScheduledAt >= filters.ScheduledFrom) &&
             (!filters.ScheduledTo.HasValue || t.ScheduledAt <= filters.ScheduledTo);
-        
-        (List<HouseKeepingTask> response,int totalCount) = await _repository.GetByConditionPaginated(predicate, currentPage, pageSize);
+        Expression<Func<HouseKeepingTask, object>>? orderBy = filters.SortBy switch
+        {
+            "scheduledAt" => t => t.ScheduledAt,
+            "status" => t => t.Status,
+            _ => null
+        };
+        (List<HouseKeepingTask> response,int totalCount) = await _repository.GetByConditionPaginated(predicate, currentPage, pageSize,orderBy,filters.SortDescending);
         var idsTo = response.Select(task => task.AssignedToId).ToList();
         var idsBy = response.Select(task => task.AssignedById).ToList();
         var ids = idsTo.Concat(idsBy);
@@ -85,7 +96,13 @@ public class HousekeepingTaskService:IHousekeepingTaskService
             (!filters.Status.HasValue || t.Status == filters.Status) &&
             (!filters.ScheduledFrom.HasValue || t.ScheduledAt >= filters.ScheduledFrom) &&
             (!filters.ScheduledTo.HasValue || t.ScheduledAt <= filters.ScheduledTo);
-        (List<HouseKeepingTask> response, int totalCount) = await _repository.GetByConditionPaginated(predicate, currentPage, pageSize);
+        Expression<Func<HouseKeepingTask, object>>? orderBy = filters.SortBy switch
+        {
+            "scheduledAt" => t => t.ScheduledAt,
+            "status" => t => t.Status,
+            _ => null
+        };
+        (List<HouseKeepingTask> response, int totalCount) = await _repository.GetByConditionPaginated(predicate, currentPage, pageSize, orderBy, filters.SortDescending);
         var idsTo = response.Select(task => task.AssignedToId).ToList();
         var idsBy = response.Select(task => task.AssignedById).ToList();
         var ids = idsTo.Concat(idsBy);

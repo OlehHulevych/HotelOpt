@@ -64,7 +64,14 @@ public class MaintenanceTicketService:IMaintenanceTicketService
             (!filters.Priority.HasValue || filters.Priority == t.Priority) &&
             (!filters.CreatedFrom.HasValue || filters.CreatedFrom <= t.CreatedAt) &&
             (!filters.CreatedTo.HasValue || filters.CreatedTo >= t.CreatedAt);
-        (List<MaintenanceTicket> query, int totalCount) = await _repository.GetByConditionPaginated(predicate,currentPage, pageSize);
+        Expression<Func<MaintenanceTicket, object>>? orderBy = filters.SortBy switch
+        {
+            "status"=>t=> t.Status,
+            "createdAt" => t=> t.CreatedAt,
+            "priority" => t => t.Priority,
+            _=>null
+        };
+        (List<MaintenanceTicket> query, int totalCount) = await _repository.GetByConditionPaginated(predicate,currentPage, pageSize, orderBy, filters.SortDescending);
         var idsStaff =  query.Select(t=>t.StaffId).ToList();
         var idsReported = query.Select(t => t.ReportedId).ToList();
         var ids = idsStaff.Concat(idsReported);

@@ -47,14 +47,21 @@ public class BookingRepository:IBookingRepository
         return (list, total);
     }
 
+    
+
     public async Task<List<Booking>> GetByCondition(Expression<Func<Booking, bool>> predicate)
     {
         return await _context.Bookings.Include(b=>b.Guests).Where(predicate).ToListAsync();
     }
 
-    public async Task<(List<Booking> Items, int TotalCount)> GetByConditionPaginated(Expression<Func<Booking, bool>> predicate, int page, int pageSize)
+    public async Task<(List<Booking> Items, int TotalCount)> GetByConditionPaginated(Expression<Func<Booking, bool>> predicate, int page, int pageSize,Expression<Func<Booking, object>>? orderBy = null,
+        bool descending = false)
     {
         var query = _context.Bookings.Include(b=>b.Guests).Where(predicate);
+        if (orderBy != null)
+        {
+            query = descending ? query.OrderByDescending(orderBy) : query.OrderBy(orderBy);
+        }
         int totalCount = await query.CountAsync();
         List<Booking> list = await query.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
         return (list, totalCount) ;
