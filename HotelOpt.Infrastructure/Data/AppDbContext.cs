@@ -12,6 +12,7 @@ public class AppDbContext:IdentityDbContext<User, IdentityRole<Guid>, Guid>
     public DbSet<HouseKeepingTask> HouseKeepingTasks { get; set; }
     public DbSet<MaintenanceTicket> MaintenanceTickets { get; set; }
     public DbSet<Shift> Shifts { get; set; }
+    public DbSet<TicketAttachment> TicketAttachments { get; set; }
     public DbSet<RoomInspection> RoomInspections { get; set; }
     public DbSet<Property> Properties { get; set; }
     public DbSet<Room> Rooms { get; set; }
@@ -31,6 +32,8 @@ public class AppDbContext:IdentityDbContext<User, IdentityRole<Guid>, Guid>
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
+        builder.Entity<TicketAttachment>()
+            .HasQueryFilter(ta => ta.TenantId == _currentTenantService.TenantId && !ta.IsDeleted);
         builder.Entity<Booking>().HasQueryFilter(b => b.TenantId == _currentTenantService.TenantId && !b.IsDeleted);
         builder.Entity<Guest>().HasQueryFilter(g => g.TenantId == _currentTenantService.TenantId && !g.IsDeleted);
         builder.Entity<RoomPhoto>().HasQueryFilter(rp=>rp.TenantId == _currentTenantService.TenantId && !rp.IsDeleted);
@@ -61,6 +64,8 @@ public class AppDbContext:IdentityDbContext<User, IdentityRole<Guid>, Guid>
         builder.Entity<Booking>().HasMany(b => b.Guests).WithMany(g => g.Bookings);
         builder.Entity<Invoice>().HasOne(i => i.Booking).WithMany().HasForeignKey(i=>i.BookingId).OnDelete(DeleteBehavior.Cascade);
         builder.Entity<Invoice>().HasOne(i => i.Room).WithMany().HasForeignKey(i => i.RoomId)
+            .OnDelete(DeleteBehavior.Cascade);
+        builder.Entity<TicketAttachment>().HasOne(t => t.Ticket).WithMany().HasForeignKey(t => t.TicketId)
             .OnDelete(DeleteBehavior.Cascade);
 
 
