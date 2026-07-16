@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "nne2iX1lH8c=",
+  "dgSpecHash": "hpr+KTNNOYU=",
   "success": true,
   "projectFilePath": "E:\\Projects\\HotelOpt\\HotelOpt.Infrastructure\\HotelOpt.Infrastructure.csproj",
   "expectedPackageFiles": [
@@ -9,6 +9,7 @@
     "C:\\Users\\Oleh\\.nuget\\packages\\azure.storage.blobs\\12.29.1\\azure.storage.blobs.12.29.1.nupkg.sha512",
     "C:\\Users\\Oleh\\.nuget\\packages\\azure.storage.common\\12.28.0\\azure.storage.common.12.28.0.nupkg.sha512",
     "C:\\Users\\Oleh\\.nuget\\packages\\bouncycastle.cryptography\\2.6.2\\bouncycastle.cryptography.2.6.2.nupkg.sha512",
+    "C:\\Users\\Oleh\\.nuget\\packages\\csvhelper\\33.1.0\\csvhelper.33.1.0.nupkg.sha512",
     "C:\\Users\\Oleh\\.nuget\\packages\\dapper\\2.0.123\\dapper.2.0.123.nupkg.sha512",
     "C:\\Users\\Oleh\\.nuget\\packages\\dapper.aot\\1.0.48\\dapper.aot.1.0.48.nupkg.sha512",
     "C:\\Users\\Oleh\\.nuget\\packages\\fluentvalidation\\11.9.2\\fluentvalidation.11.9.2.nupkg.sha512",

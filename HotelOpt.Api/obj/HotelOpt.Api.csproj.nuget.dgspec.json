@@ -1262,6 +1262,10 @@
               "target": "Package",
               "version": "[12.29.1, )"
             },
+            "CsvHelper": {
+              "target": "Package",
+              "version": "[33.1.0, )"
+            },
             "Hangfire.AspNetCore": {
               "target": "Package",
               "version": "[1.8.23, )"

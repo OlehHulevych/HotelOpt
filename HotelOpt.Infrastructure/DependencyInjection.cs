@@ -35,6 +35,7 @@ namespace HotelOpt.Infrastructure;
          services.AddScoped<IRoomInspectionService, RoomInspectionService>();
          services.AddScoped<IStripeService, StripeService>();
          services.AddScoped<IEmailService, EmailService>();
+         services.AddScoped<IExportService, ExportService>();
          services.AddHttpClient("gemini");
          services.AddHangfire(config =>
              config.UsePostgreSqlStorage(configuration.GetConnectionString("DefaultConnection")));
