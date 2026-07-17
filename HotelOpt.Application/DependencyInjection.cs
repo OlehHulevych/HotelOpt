@@ -25,6 +25,7 @@ public static class DependencyInjection
         services.AddScoped<ISubscriptionService, SubscriptionService>();
         services.AddScoped<IInvoiceService, InvoiceService>();
         services.AddScoped<ITicketAttachmentService, TicketAttachmentService>();
+        services.AddScoped<IAuditLogService, AuditLogService>();
         services.AddValidatorsFromAssembly(typeof(DependencyInjection).Assembly);
         return services;
     }

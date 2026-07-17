@@ -1,15 +1,19 @@
 ﻿using HotelOpt.Domain.Entities;
 using HotelOpt.Infrastructure.Identity;
 using HotelOpt.Application.Interfaces;
+using HotelOpt.Domain.Common;
+using HotelOpt.Domain.Enums;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace HotelOpt.Infrastructure.Data;
 
 public class AppDbContext:IdentityDbContext<User, IdentityRole<Guid>, Guid>
 {
     public DbSet<HouseKeepingTask> HouseKeepingTasks { get; set; }
+    public DbSet<AuditLog> AuditLogs { get; set; }
     public DbSet<MaintenanceTicket> MaintenanceTickets { get; set; }
     public DbSet<Shift> Shifts { get; set; }
     public DbSet<TicketAttachment> TicketAttachments { get; set; }
@@ -23,10 +27,59 @@ public class AppDbContext:IdentityDbContext<User, IdentityRole<Guid>, Guid>
     public DbSet<Guest> Guests { get; set; }
     public DbSet<Booking> Bookings { get; set; }
     private ICurrentTenantService _currentTenantService;
+    private ICurrentUserService? _currentUserService;
 
-    public AppDbContext(DbContextOptions<AppDbContext> options, ICurrentTenantService currentTenantService) : base(options)
+    public AppDbContext(DbContextOptions<AppDbContext> options, ICurrentTenantService currentTenantService, ICurrentUserService currentUserService) : base(options)
     {
         _currentTenantService = currentTenantService;
+        _currentUserService = currentUserService;
+    }
+
+    public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+    {
+        if (_currentUserService != null)
+        {
+            foreach (var entry in ChangeTracker.Entries<BaseEntity>().ToList())
+            {
+                if (entry.State == EntityState.Added)
+                {
+                    var changes = entry.Properties.ToDictionary(
+                        p => p.Metadata.Name,
+                        p => new { From = p.OriginalValue, To = p.CurrentValue }
+                    );
+                    string changesJson = JsonSerializer.Serialize(changes);
+                    AuditLog newAuditLog = new AuditLog(entry.Entity.GetType().Name, entry.Entity!.Id, EntityAction.Created,
+                        _currentUserService.UserId, _currentTenantService.TenantId, changesJson);
+                    await AuditLogs.AddAsync(newAuditLog);
+                }
+
+                if (entry.State == EntityState.Modified)
+                {
+                    var changes = entry.Properties.Where(p => p.IsModified)
+                        .ToDictionary(
+                            p => p.Metadata.Name,
+                            p => new { From = p.OriginalValue, To = p.CurrentValue }
+                        );
+                    string changesJson = JsonSerializer.Serialize(changes);
+                    AuditLog newAuditLog = new AuditLog(entry.Entity.GetType().Name, entry.Entity!.Id, EntityAction.Updated,
+                        _currentUserService.UserId, _currentTenantService.TenantId, changesJson);
+                    await AuditLogs.AddAsync(newAuditLog);
+                }
+
+                if (entry.State == EntityState.Deleted)
+                {
+                    var deleted = new { Name = entry.Entity.GetType().Name, };
+                    string changesJson = JsonSerializer.Serialize(deleted);
+                    AuditLog newAuditLog = new AuditLog(entry.Entity.GetType().Name, entry.Entity!.Id, EntityAction.Deleted,
+                        _currentUserService.UserId, _currentTenantService.TenantId, changesJson);
+                    await AuditLogs.AddAsync(newAuditLog);
+                }
+
+            }
+        }
+
+        var result = await base.SaveChangesAsync(cancellationToken);
+        return result;
     }
 
     protected override void OnModelCreating(ModelBuilder builder)
@@ -34,6 +87,7 @@ public class AppDbContext:IdentityDbContext<User, IdentityRole<Guid>, Guid>
         base.OnModelCreating(builder);
         builder.Entity<TicketAttachment>()
             .HasQueryFilter(ta => ta.TenantId == _currentTenantService.TenantId && !ta.IsDeleted);
+        builder.Entity<AuditLog>().HasQueryFilter(b => b.TenantId == _currentTenantService.TenantId && !b.IsDeleted);
         builder.Entity<Booking>().HasQueryFilter(b => b.TenantId == _currentTenantService.TenantId && !b.IsDeleted);
         builder.Entity<Guest>().HasQueryFilter(g => g.TenantId == _currentTenantService.TenantId && !g.IsDeleted);
         builder.Entity<RoomPhoto>().HasQueryFilter(rp=>rp.TenantId == _currentTenantService.TenantId && !rp.IsDeleted);
