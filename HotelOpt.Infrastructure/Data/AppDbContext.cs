@@ -13,6 +13,8 @@ namespace HotelOpt.Infrastructure.Data;
 public class AppDbContext:IdentityDbContext<User, IdentityRole<Guid>, Guid>
 {
     public DbSet<HouseKeepingTask> HouseKeepingTasks { get; set; }
+    public DbSet<TaskTemplate> TaskTemplates { get; set; }
+    public DbSet<TaskTemplateItem> TaskTemplateItems { get; set; }
     public DbSet<AuditLog> AuditLogs { get; set; }
     public DbSet<MaintenanceTicket> MaintenanceTickets { get; set; }
     public DbSet<Shift> Shifts { get; set; }
@@ -87,6 +89,8 @@ public class AppDbContext:IdentityDbContext<User, IdentityRole<Guid>, Guid>
         base.OnModelCreating(builder);
         builder.Entity<TicketAttachment>()
             .HasQueryFilter(ta => ta.TenantId == _currentTenantService.TenantId && !ta.IsDeleted);
+        builder.Entity<TaskTemplate>()
+            .HasQueryFilter(tt => tt.TenantId == _currentTenantService.TenantId && !tt.IsDeleted);
         builder.Entity<AuditLog>().HasQueryFilter(b => b.TenantId == _currentTenantService.TenantId && !b.IsDeleted);
         builder.Entity<Booking>().HasQueryFilter(b => b.TenantId == _currentTenantService.TenantId && !b.IsDeleted);
         builder.Entity<Guest>().HasQueryFilter(g => g.TenantId == _currentTenantService.TenantId && !g.IsDeleted);
@@ -121,6 +125,9 @@ public class AppDbContext:IdentityDbContext<User, IdentityRole<Guid>, Guid>
             .OnDelete(DeleteBehavior.Cascade);
         builder.Entity<TicketAttachment>().HasOne(t => t.Ticket).WithMany().HasForeignKey(t => t.TicketId)
             .OnDelete(DeleteBehavior.Cascade);
+        builder.Entity<TaskTemplate>().HasOne(t => t.Property).WithMany().HasForeignKey(t => t.PropertyId)
+            .OnDelete(DeleteBehavior.Cascade);
+        builder.Entity<TaskTemplateItem>().HasOne(t => t.TaskTemplate).WithMany(t=>t.Items).HasForeignKey(t => t.TemplateId).OnDelete(DeleteBehavior.Cascade);
 
 
 

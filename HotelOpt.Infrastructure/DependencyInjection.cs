@@ -30,6 +30,7 @@ namespace HotelOpt.Infrastructure;
          services.AddScoped<IIdentityService, IdentityService>();
          services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
          services.AddScoped<IBookingRepository, BookingRepository>();
+         services.AddScoped<ITaskTemplateRepository, TaskTemplateRepository>();
          services.AddScoped<IFileStorageService, FileStorageService>();
          services.AddScoped<IGeminiService, GeminiService>();
          services.AddScoped<IRoomInspectionService, RoomInspectionService>();
