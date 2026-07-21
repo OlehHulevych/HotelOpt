@@ -57,7 +57,7 @@ app.MapOpenApi();
 app.MapScalarApiReference();
 
 
-app.UseHttpsRedirection();
+if (app.Environment.IsDevelopment()) app.UseHttpsRedirection();
 app.UseCors("AllowAll");
 app.UseAuthentication();
 app.UseAuthorization();

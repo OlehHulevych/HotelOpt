@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "xcleoHr1c4s=",
+  "dgSpecHash": "B7QCIYIE20E=",
   "success": true,
   "projectFilePath": "E:\\Projects\\HotelOpt\\HotelOpt.Api\\HotelOpt.Api.csproj",
   "expectedPackageFiles": [
@@ -37,6 +37,7 @@
     "C:\\Users\\Oleh\\.nuget\\packages\\microsoft.entityframeworkcore.analyzers\\10.0.9\\microsoft.entityframeworkcore.analyzers.10.0.9.nupkg.sha512",
     "C:\\Users\\Oleh\\.nuget\\packages\\microsoft.entityframeworkcore.design\\10.0.9\\microsoft.entityframeworkcore.design.10.0.9.nupkg.sha512",
     "C:\\Users\\Oleh\\.nuget\\packages\\microsoft.entityframeworkcore.relational\\10.0.9\\microsoft.entityframeworkcore.relational.10.0.9.nupkg.sha512",
+    "C:\\Users\\Oleh\\.nuget\\packages\\microsoft.extensions.dependencyinjection.abstractions\\2.1.0\\microsoft.extensions.dependencyinjection.abstractions.2.1.0.nupkg.sha512",
     "C:\\Users\\Oleh\\.nuget\\packages\\microsoft.extensions.dependencymodel\\10.0.9\\microsoft.extensions.dependencymodel.10.0.9.nupkg.sha512",
     "C:\\Users\\Oleh\\.nuget\\packages\\microsoft.identity.client\\4.83.1\\microsoft.identity.client.4.83.1.nupkg.sha512",
     "C:\\Users\\Oleh\\.nuget\\packages\\microsoft.identity.client.extensions.msal\\4.83.1\\microsoft.identity.client.extensions.msal.4.83.1.nupkg.sha512",
