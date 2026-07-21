@@ -6,6 +6,7 @@ using HotelOpt.Infrastructure;
 using HotelOpt.Application;
 using HotelOpt.Application.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using Scalar.AspNetCore;
@@ -52,6 +53,10 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowAll", p=>p.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 });
 var app = builder.Build();
+app.UseForwardedHeaders(new ForwardedHeadersOptions
+{
+    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+});
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 app.MapOpenApi();
 app.MapScalarApiReference();
