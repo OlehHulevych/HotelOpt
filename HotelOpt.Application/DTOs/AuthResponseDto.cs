@@ -1,3 +1,3 @@
 ﻿namespace HotelOpt.Application.DTOs;
 
-public record AuthResponseDto(string AccessToken, string RefreshToken);
+public record AuthResponseDto(string AccessToken, string RefreshToken, UserDto UserDto);
