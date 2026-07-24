@@ -1,4 +1,5 @@
 using System.Text;
+using System.Text.Json.Serialization;
 using Hangfire;
 using HotelOpt.Handlers;
 using HotelOpt.Hubs;
@@ -13,7 +14,9 @@ using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(opts =>
+        opts.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddApplication();
 builder.Services.AddOpenApi();
