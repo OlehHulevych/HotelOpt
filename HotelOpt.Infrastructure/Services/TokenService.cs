@@ -17,7 +17,7 @@ public class TokenService:ITokenService
     {
         _configuration = configuration;
     }
-    public string CreateToken(Guid tenantId, Guid userId, string name, string email, UserRole role)
+    public string CreateToken(Guid tenantId, Guid userId, string name, string email, UserRole role, Guid? propertyId=null)
     {
         var claimList = new List<Claim>
         {
@@ -27,11 +27,11 @@ public class TokenService:ITokenService
             new Claim(ClaimTypes.Email, email),
             new Claim(ClaimTypes.Role, role.ToString())
         };
-
+        if(propertyId.HasValue) claimList.Add(new Claim("PropertyId", propertyId.ToString()!));
         var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"] ?? string.Empty));
         var credentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
         
-
+        
         JwtSecurityToken token = new JwtSecurityToken(
             issuer:_configuration["Jwt:issuer"],
             audience:_configuration["Jwt:audience"],

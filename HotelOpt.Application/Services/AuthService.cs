@@ -21,7 +21,7 @@ public class AuthService:IAuthService
     {
         var validationResult = await _registrationValidator.ValidateAsync(dto);
         if (!validationResult.IsValid) throw new ValidationException(validationResult.Errors);
-        var result = await _identityService.CreateUser(dto.Name, dto.Surname, dto.Email, dto.Role,dto.Password,dto.TenantId);
+        var result = await _identityService.CreateUser(dto.Name, dto.Surname, dto.Email, dto.Role,dto.Password,dto.TenantId,dto.PropertyId);
         return result;
     }
 
@@ -30,20 +30,20 @@ public class AuthService:IAuthService
         var validationResult = await _loginValidator.ValidateAsync(dto);
         if (!validationResult.IsValid) throw new ValidationException(validationResult.Errors);
         var user = await _identityService.FindByEmail(dto.Email);
-        UserDto userDto = new UserDto(user.FirstName,user.SecondName,user.Email, user.Id,user.TenantId,user.Role);
+        UserDto userDto = new UserDto(user.FirstName,user.SecondName,user.Email, user.Id,user.TenantId,user.Role,user.PropertyId);
         bool checkPassword = await _identityService.CheckPassword(user.Id, dto.Password);
         if (!checkPassword) throw new Exception("Invalid password");
         var refreshToken = await _identityService.GenerateAndSaveRefreshTokenAsync(user.Id);
-        var token = _tokenService.CreateToken(user.TenantId, user.Id, user.FirstName + " " + user.SecondName, user.Email, user.Role);
+        var token = _tokenService.CreateToken(user.TenantId, user.Id, user.FirstName + " " + user.SecondName, user.Email, user.Role, user.PropertyId);
         return new AuthResponseDto(token, refreshToken,userDto);
     }
 
     public async Task<AuthResponseDto> RefreshAsync(string refreshToken)
     {
         var user = await _identityService.GetUserByRefreshTokenAsync(refreshToken);
-        UserDto userDto = new UserDto(user.FirstName,user.SecondName,user.Email, user.Id,user.TenantId,user.Role);
+        UserDto userDto = new UserDto(user.FirstName,user.SecondName,user.Email, user.Id,user.TenantId,user.Role, user.PropertyId);
         var newRefreshToken = await _identityService.GenerateAndSaveRefreshTokenAsync(user.Id);
-        var newAccessToken =  _tokenService.CreateToken(user.TenantId, user.Id, user.FirstName + " "+user.SecondName, user.Email,user.Role);
+        var newAccessToken =  _tokenService.CreateToken(user.TenantId, user.Id, user.FirstName + " "+user.SecondName, user.Email,user.Role,user.PropertyId);
         return new AuthResponseDto(newAccessToken, newRefreshToken, userDto);
     }
 

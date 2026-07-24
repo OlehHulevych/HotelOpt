@@ -2,4 +2,4 @@
 
 namespace HotelOpt.Application.DTOs;
 
-public record UserDto(string FirstName, string SecondName, string Email, Guid Id, Guid TenantId, UserRole Role );
+public record UserDto(string FirstName, string SecondName, string Email, Guid Id, Guid TenantId, UserRole Role,Guid? PropertyId =null );

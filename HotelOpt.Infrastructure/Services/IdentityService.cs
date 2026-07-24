@@ -19,9 +19,9 @@ public class IdentityService:IIdentityService
         _userManager = userManager;
         _tokenService = tokenService;
     }
-    public async Task<bool> CreateUser(string firstName, string secondName, string email, UserRole role, string password, Guid tenantId)
+    public async Task<bool> CreateUser(string firstName, string secondName, string email, UserRole role, string password, Guid tenantId, Guid? PropertyId=null)
     {
-        User newUser = new User(firstName, secondName, email, tenantId, role );
+        User newUser = new User(firstName, secondName, email, tenantId, role,PropertyId );
         var result = await _userManager.CreateAsync(newUser, password);
         if (!result.Succeeded) throw new Exception(string.Join(",", result.Errors.Select(e=>e.Description)));
         return true;
@@ -32,7 +32,7 @@ public class IdentityService:IIdentityService
     {
         var user = await _userManager.FindByEmailAsync(email);
         if (user == null || user.Email == null  ) throw new NotFoundException("User is not found");
-        UserDto newDto = new UserDto(user.FirstName, user.LastName, user.Email,user.Id, user.TenantId, user.Role);
+        UserDto newDto = new UserDto(user.FirstName, user.LastName, user.Email,user.Id, user.TenantId, user.Role, user.PropertyId);
         return newDto;
     }
 
@@ -77,7 +77,7 @@ public class IdentityService:IIdentityService
         User? user = await _userManager.Users.FirstOrDefaultAsync(u => u.RefreshToken == refreshToken);
         if (user == null || user.Email == null) throw new UnauthorizedException("Invalid refresh token");
         if (user.RefreshTokenExpiresAt < DateTimeOffset.UtcNow) throw new UnauthorizedException("Refresh token has expired");
-        return new UserDto(user.FirstName, user.LastName, user.Email, user.Id, user.TenantId, user.Role);
+        return new UserDto(user.FirstName, user.LastName, user.Email, user.Id, user.TenantId, user.Role, user.PropertyId);
     }
 
     public async Task RevokeRefreshTokenAsync(Guid userId)

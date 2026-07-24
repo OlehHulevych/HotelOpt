@@ -11,6 +11,9 @@ public sealed class User : IdentityUser<Guid>
     
     public Guid TenantId { get; private set; }
     public Tenant Tenant { get; private set; }
+    public Guid? PropertyId { get; private set; }
+    public Property Property { get; private set; }
+    
     public DateTimeOffset CreatedAt { get; private set; }
     public DateTimeOffset UpdatedAt { get; private set; }
     public UserRole Role { get; private set; }
@@ -24,17 +27,20 @@ public sealed class User : IdentityUser<Guid>
         FirstName = null!;
         LastName = null!;
         TenantId = Guid.Empty;
+        PropertyId = null;
+        Property = null!;
         CreatedAt = DateTimeOffset.UtcNow;
         UpdatedAt = DateTimeOffset.UtcNow;
         Tenant = null!;
 
     }
 
-    public User(string firstName, string lastName, string email, Guid tenantId, UserRole role)
+    public User(string firstName, string lastName, string email, Guid tenantId, UserRole role, Guid? propertyId =null)
     {
         FirstName = firstName;
         LastName = lastName;
         TenantId = tenantId;
+        PropertyId = propertyId;
         Role = role;
         Tenant = null!;
         Email = email;
