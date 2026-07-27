@@ -14,9 +14,10 @@ public class FileStorageService:IFileStorageService
     }
     public async Task<string> UploadAsync(Stream fileStream, string fileName, string contentType, string containerName)
     {
+        var blobFileName = Guid.NewGuid() + "_" + fileName;
         var containerClient = _blobServiceClient.GetBlobContainerClient(containerName);
         await containerClient.CreateIfNotExistsAsync();
-        var blobClient = containerClient.GetBlobClient(fileName);
+        var blobClient = containerClient.GetBlobClient(blobFileName);
         await blobClient.UploadAsync(fileStream, new BlobHttpHeaders{ContentType = contentType});
         return blobClient.Uri.ToString();
 
