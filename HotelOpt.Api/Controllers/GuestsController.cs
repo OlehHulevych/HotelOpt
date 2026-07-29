@@ -35,8 +35,8 @@ public class GuestsController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetAll([FromQuery] int currentPage = 1, int pageSize = 10)
     {
-        var data = await _service.GetAll(currentPage, pageSize);
-        return Ok(new { message = "Guests fetched successfully", data });
+        var result = await _service.GetAll(currentPage, pageSize);
+        return Ok(new { message = "Guests fetched successfully", result });
     }
 
     [HttpGet("{id}")]
