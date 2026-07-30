@@ -35,27 +35,27 @@ public class HouseKeepingTaskController:ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetAll([FromQuery] HouseTaskFilterDto filters, [FromQuery] int currentPage = 1, [FromQuery] int pageSize = 10)
     {
-        var data = await _service.GetAllTasks(currentPage, pageSize, filters);
-        return Ok(new {message = "You fetched all tasks successfully", data});
+        var list = await _service.GetAllTasks(currentPage, pageSize, filters);
+        return Ok(new {message = "You fetched all tasks successfully", list});
     }
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById(Guid id)
     {
-        HouseKeepingTaskDto tasks = await _service.GetTaskById(id);
-        return Ok(new {message = $"Task {id} was fetched successfully", tasks});
+        HouseKeepingTaskDto task = await _service.GetTaskById(id);
+        return Ok(new {message = $"Task {id} was fetched successfully", task});
     }
     [HttpGet("staff/{id}")]
     public async Task<IActionResult> GetAllByAssignedId(Guid id, [FromQuery] HouseTaskFilterDto filters, [FromQuery] int currentPage = 1, [FromQuery] int pageSize= 10)
     {
-        var data = await _service.GetTaskByAssignedUser(id, currentPage, pageSize, filters);
-        return Ok(new {message = "You fetched all tasks successfully", data});
+        var list = await _service.GetTaskByAssignedUser(id, currentPage, pageSize, filters);
+        return Ok(new {message = "You fetched all tasks successfully", list});
     }
     
     [HttpGet("property/{id}")]
     public async Task<IActionResult> GetAllByProperty(Guid id,[FromQuery] HouseTaskFilterDto filters, [FromQuery]  int currentPage = 1,[FromQuery] int pageSize = 10)
     {
-        var data  = await _service.GetTasksByProperty(id, currentPage, pageSize, filters);
-        return Ok(new {message = "You fetched all tasks successfully", data});
+        var list  = await _service.GetTasksByProperty(id, currentPage, pageSize, filters);
+        return Ok(new {message = "You fetched all tasks successfully", list});
     }
 
     [HttpPatch("start/{id}")]
