@@ -35,13 +35,13 @@ public class BookingRepository:IBookingRepository
 
     public async Task<List<Booking>> GetAll()
     {
-         List<Booking> list = await _context.Bookings.Include(b=>b.Guests).ToListAsync();
+         List<Booking> list = await _context.Bookings.Include(b=>b.Guests).Include(b=>b.Room).ToListAsync();
          return list;
     }
 
     public async Task<(List<Booking> Items, int TotalCount)> GetAllPaginated(int page, int pageSize)
     {
-        var query = _context.Bookings.Include(b=>b.Guests).AsQueryable();
+        var query = _context.Bookings.Include(b=>b.Guests).Include(b=>b.Room).AsQueryable();
         var total = await query.CountAsync();
         var list = await query.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
         return (list, total);
@@ -51,13 +51,13 @@ public class BookingRepository:IBookingRepository
 
     public async Task<List<Booking>> GetByCondition(Expression<Func<Booking, bool>> predicate)
     {
-        return await _context.Bookings.Include(b=>b.Guests).Where(predicate).ToListAsync();
+        return await _context.Bookings.Include(b=>b.Guests).Include(b=>b.Room).Where(predicate).ToListAsync();
     }
 
     public async Task<(List<Booking> Items, int TotalCount)> GetByConditionPaginated(Expression<Func<Booking, bool>> predicate, int page, int pageSize,Expression<Func<Booking, object>>? orderBy = null,
         bool descending = false)
     {
-        var query = _context.Bookings.Include(b=>b.Guests).Where(predicate);
+        var query = _context.Bookings.Include(b=>b.Guests).Include(b=>b.Room).Where(predicate);
         if (orderBy != null)
         {
             query = descending ? query.OrderByDescending(orderBy) : query.OrderBy(orderBy);

@@ -30,7 +30,7 @@ public class BookingService:IBookingService
         if (occupiedBooking.Any()) throw new Exception("This time is occupied");
         Booking booking = new Booking(dto.RoomId,dto.PropertyId,_currentTenantService.TenantId,dto.CheckInDate, dto.CheckOutDate, leaderGuest);
         await _repository.Add(booking);
-        return new BookingResponseDto(booking.Id,booking.RoomId,booking.PropertyId,booking.CheckInDate,booking.CheckOutDate,booking.Status.ToString(), booking.Guests.Select(g=>$"{g.FirstName} {g.LastName}").ToList());
+        return new BookingResponseDto(booking.Id,booking.RoomId,booking.Room.RoomNumber,booking.PropertyId,booking.CheckInDate,booking.CheckOutDate,booking.Status.ToString(), booking.Guests.Select(g=>$"{g.FirstName} {g.LastName}").ToList());
 
     }
 
@@ -93,7 +93,7 @@ public class BookingService:IBookingService
             _ => null
         };
         (List<Booking> query, int total) = await _repository.GetByConditionPaginated(predicate,page, pageSize, orderBy,filters.SortDescending );
-        List<BookingResponseDto> list = query.Select(b => new BookingResponseDto(b.Id,b.RoomId,b.PropertyId,b.CheckInDate, b.CheckOutDate,b.Status.ToString(), b.Guests.Select(g=>$"{g.FirstName} {g.LastName}").ToList())).ToList();
+        List<BookingResponseDto> list = query.Select(b => new BookingResponseDto(b.Id,b.RoomId,b.Room.RoomNumber,b.PropertyId,b.CheckInDate, b.CheckOutDate,b.Status.ToString(), b.Guests.Select(g=>$"{g.FirstName} {g.LastName}").ToList())).ToList();
         return new PaginatedResult<BookingResponseDto>(list, total, pageSize, page);
     }
 }
