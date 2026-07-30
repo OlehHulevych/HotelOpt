@@ -15,4 +15,5 @@ public interface IIdentityService
     Task<UserDto?> GetUserByRefreshTokenAsync(string refreshToken);
     Task RevokeRefreshTokenAsync(Guid userId);
     Task<string?> GetUserEmailAsync(Guid userId);
+    Task<List<UserDto>> GetAllStaffAsync(Guid tenantId);
 }

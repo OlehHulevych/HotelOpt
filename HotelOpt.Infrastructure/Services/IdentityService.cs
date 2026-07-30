@@ -94,4 +94,13 @@ public class IdentityService:IIdentityService
         if (user == null || string.IsNullOrEmpty(user.Email)) throw new Exception("The user is not found");
         return user.Email;
     }
+
+    public async Task<List<UserDto>> GetAllStaffAsync(Guid tenantId)
+    {
+        var users = await _userManager.Users.Where(u => u.TenantId == tenantId).ToListAsync();
+        var usersList = users
+            .Select(u => new UserDto(u.FirstName, u.LastName, u.Email, u.Id, u.TenantId, u.Role, u.PropertyId))
+            .ToList();
+        return usersList;
+    }
 }
