@@ -94,7 +94,7 @@ public class ShiftService(
                                                                        && (t.ResolvedAt < shift.EndTime);
         List<MaintenanceTicket> tickets = await ticketRepository.GetByCondition(ticketConditions);
         var ticketNames = await identityService.GetUserNamesByIds(tickets.Select(t => t.StaffId).Concat(tickets.Select(t=>t.ReportedId)));
-        List<MaintenanceTicketDto> ticketList = tickets.Select(t=>new MaintenanceTicketDto(t.Id,t.Title,t.Description,t.StaffId,ticketNames.GetValueOrDefault(t.StaffId,"Unknown"),t.ReportedId,ticketNames.GetValueOrDefault(t.ReportedId,"Unknown"),t.RoomId,t.PropertyId,t.Priority,t.Status,t.ResolvedAt)).ToList();
+        List<MaintenanceTicketDto> ticketList = tickets.Select(t=>new MaintenanceTicketDto(t.Id,t.Title,t.Description,t.StaffId,ticketNames.GetValueOrDefault(t.StaffId,"Unknown"),t.ReportedId,ticketNames.GetValueOrDefault(t.ReportedId,"Unknown"),t.RoomId,roomNumbers.GetValueOrDefault(t.RoomId, "Unknown"),t.PropertyId,t.Priority,t.Status,t.ResolvedAt)).ToList();
         return new ShiftReportDto(shift.StaffId,names.GetValueOrDefault(shift.StaffId,"Unknown"),shift.StartTime,shift.EndTime,shift.PropertyId,taskList.Count, taskList,ticketList.Count,ticketList );
     }
 }

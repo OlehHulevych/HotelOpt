@@ -35,33 +35,33 @@ public class MaintenanceController:ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetAll([FromQuery] MaintenanceTicketFilterDto filters,[FromQuery] int currentPage = 1, [FromQuery] int pageSize = 10)
     {
-        var data = await _service.GetAll(currentPage, pageSize, filters);
-        return Ok(new {message = "You fetched all tickets successfully", data});
+        var list = await _service.GetAll(currentPage, pageSize, filters);
+        return Ok(new {message = "You fetched all tickets successfully", list});
     }
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById(Guid id)
     {
-        MaintenanceTicketDto tasks = await _service.GetById(id);
-        return Ok(new {message = $"Ticket {id} was fetched successfully", tasks});
+        MaintenanceTicketDto task = await _service.GetById(id);
+        return Ok(new {message = $"Ticket {id} was fetched successfully", task});
     }
     [HttpGet("staff/{id}")]
     public async Task<IActionResult> GetAllByAssignedId(Guid id,[FromQuery] MaintenanceTicketFilterDto filters, [FromQuery] int currentPage = 1, [FromQuery] int pageSize= 10)
     {
-        var data = await _service.GetByStaffId(id, currentPage, pageSize, filters);
-        return Ok(new {message = "You fetched all tickets successfully", data});
+        var list = await _service.GetByStaffId(id, currentPage, pageSize, filters);
+        return Ok(new {message = "You fetched all tickets successfully", list});
     }
     
     [HttpGet("property/{id}")]
     public async Task<IActionResult> GetAllByProperty(Guid id, [FromQuery] MaintenanceTicketFilterDto filters, [FromQuery] int currentPage = 1, int pageSize = 10)
     {
-        var data  = await _service.GetAllByProperty(id, currentPage, pageSize, filters);
-        return Ok(new {message = "You fetched all tickets successfully", data});
+        var list  = await _service.GetAllByProperty(id, currentPage, pageSize, filters);
+        return Ok(new {message = "You fetched all tickets successfully", list});
     }
     [HttpGet("room/{id}")]
     public async Task<IActionResult> GetAllByRoom(Guid id,[FromQuery] MaintenanceTicketFilterDto filters, [FromQuery] int currentPage = 1, int pageSize = 10)
     {
-        var data  = await _service.GetAllByRoom(id, currentPage, pageSize, filters);
-        return Ok(new {message = "You fetched all tickets successfully", data});
+        var list  = await _service.GetAllByRoom(id, currentPage, pageSize, filters);
+        return Ok(new {message = "You fetched all tickets successfully", list});
     }
     [Authorize(Roles = "Manager")]
     [HttpDelete("{id}")]
