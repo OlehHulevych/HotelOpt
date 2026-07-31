@@ -11,6 +11,8 @@ public interface IRepository<T> where T:BaseEntity
     public Task Update(T entity);
     public Task<bool> Delete(Guid id);
     public Task<List<T>> GetByCondition(Expression<Func<T, bool>> predicate);
+
+    
     Task<(List<T> Items, int TotalCount)> GetAllPaginated(int page, int pageSize);
     Task<(List<T> Items, int TotalCount)> GetByConditionPaginated(Expression<Func<T, bool>> predicate, int page, int pageSize, Expression<Func<T, object>>? orderBy = null, bool descending = false);
     Task<T?> GetByIdWithIncludes(Guid id, params Expression<Func<T, object>>[] includes);

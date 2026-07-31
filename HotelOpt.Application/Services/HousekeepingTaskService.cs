@@ -40,10 +40,11 @@ public class HousekeepingTaskService:IHousekeepingTaskService
     public async Task<HouseKeepingTaskDto> GetTaskById(Guid id)
     {
         HouseKeepingTask task = await _repository.GetById(id);
+        var room = await _roomRepository.GetById(task.RoomId);
         List<Guid> ids = new List<Guid>{task.AssignedToId, task.AssignedById};
         var names = await _identityService.GetUserNamesByIds(ids);
         HouseKeepingTaskDto dto = new HouseKeepingTaskDto(task.Id, task.Title, task.AssignedToId, names.GetValueOrDefault(task.AssignedToId,"Unknown"), task.AssignedById, names.GetValueOrDefault(task.AssignedById,"Unknown"),
-            task.RoomId, task.Status, task.ScheduledAt, task.CompletedAt);
+            task.RoomId, room.RoomNumber,task.Status, task.ScheduledAt, task.CompletedAt);
         return dto;
     }
 
@@ -64,7 +65,10 @@ public class HousekeepingTaskService:IHousekeepingTaskService
         var idsBy = response.Select(task => task.AssignedById).ToList();
         var ids = idsTo.Concat(idsBy);
         var names = await _identityService.GetUserNamesByIds(ids);
-        List<HouseKeepingTaskDto> list = response.Select(task => new HouseKeepingTaskDto(task.Id, task.Title, task.AssignedToId, names.GetValueOrDefault(task.AssignedToId, "Unknown"), task.AssignedById,names.GetValueOrDefault(task.AssignedById, "Unknown") , task.RoomId, task.Status, task.ScheduledAt, task.CompletedAt)).ToList();
+        var roomIds = response.Select(r => r.RoomId).Distinct().ToList();
+        var roomList = await _roomRepository.GetByCondition(r => roomIds.Contains(r.Id));
+        var roomNumbers = roomList.ToDictionary(r=>r.Id, r=>r.RoomNumber);
+        List<HouseKeepingTaskDto> list = response.Select(task => new HouseKeepingTaskDto(task.Id, task.Title, task.AssignedToId, names.GetValueOrDefault(task.AssignedToId, "Unknown"), task.AssignedById,names.GetValueOrDefault(task.AssignedById, "Unknown") , task.RoomId,roomNumbers.GetValueOrDefault(task.RoomId, "Unknown"), task.Status, task.ScheduledAt, task.CompletedAt)).ToList();
         return new PaginatedResult<HouseKeepingTaskDto>(list,totalCount,pageSize,currentPage);
     }
 
@@ -86,7 +90,10 @@ public class HousekeepingTaskService:IHousekeepingTaskService
         var idsBy = response.Select(task => task.AssignedById).ToList();
         var ids = idsTo.Concat(idsBy);
         var names = await _identityService.GetUserNamesByIds(ids);
-        List<HouseKeepingTaskDto> list = response.Select(task => new HouseKeepingTaskDto(task.Id, task.Title, task.AssignedToId, names.GetValueOrDefault(task.AssignedToId, "Unknown"),task.AssignedById, names.GetValueOrDefault(task.AssignedById, "Unknown"), task.RoomId, task.Status, task.ScheduledAt, task.CompletedAt)).ToList();
+        var roomIds = response.Select(r => r.RoomId).Distinct().ToList();
+        var roomList = await _roomRepository.GetByCondition(r => roomIds.Contains(r.Id));
+        var roomNumbers = roomList.ToDictionary(r=>r.Id, r=>r.RoomNumber);
+        List<HouseKeepingTaskDto> list = response.Select(task => new HouseKeepingTaskDto(task.Id, task.Title, task.AssignedToId, names.GetValueOrDefault(task.AssignedToId, "Unknown"),task.AssignedById, names.GetValueOrDefault(task.AssignedById, "Unknown"), task.RoomId,roomNumbers.GetValueOrDefault(task.RoomId, "Unknown"), task.Status, task.ScheduledAt, task.CompletedAt)).ToList();
         return new PaginatedResult<HouseKeepingTaskDto>(list,totalCount,pageSize,currentPage);
     }
 
@@ -107,7 +114,10 @@ public class HousekeepingTaskService:IHousekeepingTaskService
         var idsBy = response.Select(task => task.AssignedById).ToList();
         var ids = idsTo.Concat(idsBy);
         var names = await _identityService.GetUserNamesByIds(ids);
-        List<HouseKeepingTaskDto> list = response.Select(task => new HouseKeepingTaskDto(task.Id, task.Title, task.AssignedToId, names.GetValueOrDefault(task.AssignedToId, "Unknown"), task.AssignedById,names.GetValueOrDefault(task.AssignedById, "Unknown"), task.RoomId, task.Status, task.ScheduledAt, task.CompletedAt)).ToList();
+        var roomIds = response.Select(r => r.RoomId).Distinct().ToList();
+        var roomList = await _roomRepository.GetByCondition(r => roomIds.Contains(r.Id));
+        var roomNumbers = roomList.ToDictionary(r=>r.Id, r=>r.RoomNumber);
+        List<HouseKeepingTaskDto> list = response.Select(task => new HouseKeepingTaskDto(task.Id, task.Title, task.AssignedToId, names.GetValueOrDefault(task.AssignedToId, "Unknown"), task.AssignedById,names.GetValueOrDefault(task.AssignedById, "Unknown"), task.RoomId, roomNumbers.GetValueOrDefault(task.RoomId, "Unknown"), task.Status, task.ScheduledAt, task.CompletedAt)).ToList();
         return new PaginatedResult<HouseKeepingTaskDto>(list,totalCount,pageSize,currentPage);
     }
 

@@ -12,7 +12,8 @@ public class ShiftService(
     IRepository<Shift> repository,
     IIdentityService identityService,
     IRepository<MaintenanceTicket> ticketRepository,
-    IRepository<HouseKeepingTask> taskRepository)
+    IRepository<HouseKeepingTask> taskRepository,
+    IRepository<Room> roomRepository)
     : IShiftService
 {
     public async Task<bool> AddShift(CreateShiftDto dto)
@@ -78,11 +79,15 @@ public class ShiftService(
                                                                    && (t.Status==HouseKeepingTaskStatus.Completed)
                                                                    && (t.ScheduledAt>=shift.StartTime)
                                                                    && (t.CompletedAt <= shift.EndTime);
-        List<HouseKeepingTask> houseKeepingTasks = await taskRepository.GetByCondition(taskConditions);
+        List<HouseKeepingTask> houseKeepingTasks = await taskRepository.GetByCondition(taskConditions );
+        var roomIds = houseKeepingTasks.Select(t => t.RoomId).Distinct().ToList();
+        var rooms = await roomRepository.GetByCondition(r=>roomIds.Contains(r.Id));
+        var roomNumbers = rooms.ToDictionary(r => r.Id, r => r.RoomNumber);
         var names = await identityService.GetUserNamesByIds([shift.StaffId]);
         var assignedByNames = await identityService.GetUserNamesByIds(houseKeepingTasks.Select(t=>t.AssignedById));
+       
         List<HouseKeepingTaskDto> taskList = houseKeepingTasks.Select(t => new HouseKeepingTaskDto(t.Id,t.Title,t.AssignedToId,names.GetValueOrDefault(t.AssignedToId, "Unknown"), 
-            t.AssignedById,assignedByNames.GetValueOrDefault(t.AssignedById, "Unknown"),t.RoomId,t.Status,t.ScheduledAt,t.CompletedAt)).ToList();
+            t.AssignedById,assignedByNames.GetValueOrDefault(t.AssignedById, "Unknown"),t.RoomId, roomNumbers.GetValueOrDefault(t.RoomId, "Unknown"),t.Status,t.ScheduledAt,t.CompletedAt)).ToList();
         Expression<Func<MaintenanceTicket, bool>> ticketConditions = t => (t.StaffId == shift.StaffId) 
                                                                        && (t.Status==TicketStatus.Resolved)
                                                                        &&(t.ResolvedAt >= shift.StartTime)

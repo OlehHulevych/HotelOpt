@@ -68,6 +68,8 @@ public class TaskTemplateRepository : ITaskTemplateRepository
     public async Task<List<TaskTemplate>> GetByCondition(Expression<Func<TaskTemplate, bool>> predicate)
         => await _context.TaskTemplates.Include(t => t.Items).Where(predicate).ToListAsync();
 
+    
+
     public async Task<(List<TaskTemplate> Items, int TotalCount)> GetAllPaginated(int page, int pageSize)
     {
         var query = _context.TaskTemplates.Include(t => t.Items);

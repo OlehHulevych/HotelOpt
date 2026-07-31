@@ -56,6 +56,8 @@ public class Repository<T>:IRepository<T> where T:BaseEntity
         return await _context.Set<T>().Where(predicate).ToListAsync();
     }
 
+    
+
     public async Task<(List<T> Items, int TotalCount)> GetAllPaginated(int page, int pageSize)
     {
         var query = _context.Set<T>();

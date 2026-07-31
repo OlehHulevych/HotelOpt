@@ -39,6 +39,7 @@ public class BookingRepository:IBookingRepository
          return list;
     }
 
+    
     public async Task<(List<Booking> Items, int TotalCount)> GetAllPaginated(int page, int pageSize)
     {
         var query = _context.Bookings.Include(b=>b.Guests).Include(b=>b.Room).AsQueryable();
@@ -54,6 +55,7 @@ public class BookingRepository:IBookingRepository
         return await _context.Bookings.Include(b=>b.Guests).Include(b=>b.Room).Where(predicate).ToListAsync();
     }
 
+    
     public async Task<(List<Booking> Items, int TotalCount)> GetByConditionPaginated(Expression<Func<Booking, bool>> predicate, int page, int pageSize,Expression<Func<Booking, object>>? orderBy = null,
         bool descending = false)
     {
