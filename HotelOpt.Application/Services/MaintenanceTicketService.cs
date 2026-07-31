@@ -51,7 +51,10 @@ public class MaintenanceTicketService:IMaintenanceTicketService
         var idsReported = query.Select(t => t.ReportedId).ToList();
         var ids = idsStaff.Concat(idsReported);
         var names = await _identityService.GetUserNamesByIds(ids);
-        List<MaintenanceTicketDto> list =  query.Select(t=>new MaintenanceTicketDto(t.Id,t.Title,t.Description,t.StaffId,names.GetValueOrDefault(t.StaffId, "Unknown"), t.ReportedId, names.GetValueOrDefault(t.ReportedId, "Unknown"),t.RoomId, t.PropertyId,t.Priority, t.Status, t.ResolvedAt)).ToList();
+        var roomIds = query.Select(m => m.RoomId).Distinct().ToList();
+        var rooms = await _roomRepository.GetByCondition(r=>roomIds.Contains(r.Id));
+        var roomNumbers = rooms.ToDictionary(r => r.Id, r => r.RoomNumber);
+        List<MaintenanceTicketDto> list =  query.Select(t=>new MaintenanceTicketDto(t.Id,t.Title,t.Description,t.StaffId,names.GetValueOrDefault(t.StaffId, "Unknown"), t.ReportedId, names.GetValueOrDefault(t.ReportedId, "Unknown"),t.RoomId, roomNumbers.GetValueOrDefault(t.RoomId,"Unknown"),t.PropertyId,t.Priority, t.Status, t.ResolvedAt)).ToList();
         
         return new PaginatedResult<MaintenanceTicketDto>(list, totalCount, pageSize,currentPage);
     }
@@ -76,7 +79,10 @@ public class MaintenanceTicketService:IMaintenanceTicketService
         var idsReported = query.Select(t => t.ReportedId).ToList();
         var ids = idsStaff.Concat(idsReported);
         var names = await _identityService.GetUserNamesByIds(ids);
-        List<MaintenanceTicketDto> list =  query.Select(t=>new MaintenanceTicketDto(t.Id,t.Title,t.Description,t.StaffId,names.GetValueOrDefault(t.StaffId, "Unknown"), t.ReportedId,names.GetValueOrDefault(t.ReportedId, "Unknown"), t.RoomId, t.PropertyId,t.Priority, t.Status, t.ResolvedAt)).ToList();
+        var roomIds = query.Select(m => m.RoomId).Distinct().ToList();
+        var rooms = await _roomRepository.GetByCondition(r=>roomIds.Contains(r.Id));
+        var roomNumbers = rooms.ToDictionary(r => r.Id, r => r.RoomNumber);
+        List<MaintenanceTicketDto> list =  query.Select(t=>new MaintenanceTicketDto(t.Id,t.Title,t.Description,t.StaffId,names.GetValueOrDefault(t.StaffId, "Unknown"), t.ReportedId,names.GetValueOrDefault(t.ReportedId, "Unknown"), t.RoomId,roomNumbers.GetValueOrDefault(t.RoomId, "Unknown"), t.PropertyId,t.Priority, t.Status, t.ResolvedAt)).ToList();
         return new PaginatedResult<MaintenanceTicketDto>(list, totalCount, pageSize,currentPage);
     }
 
@@ -93,7 +99,10 @@ public class MaintenanceTicketService:IMaintenanceTicketService
         var idsReported = query.Select(t => t.ReportedId).ToList();
         var ids = idsStaff.Concat(idsReported);
         var names = await _identityService.GetUserNamesByIds(ids);
-        List<MaintenanceTicketDto> list =  query.Select(t=>new MaintenanceTicketDto(t.Id,t.Title,t.Description,t.StaffId, names.GetValueOrDefault(t.StaffId, "Unknown"), t.ReportedId, names.GetValueOrDefault(t.ReportedId, "Unknown"),t.RoomId, t.PropertyId,t.Priority, t.Status, t.ResolvedAt)).ToList();
+        var roomIds = query.Select(m => m.RoomId).Distinct().ToList();
+        var rooms = await _roomRepository.GetByCondition(r=>roomIds.Contains(r.Id));
+        var roomNumbers = rooms.ToDictionary(r => r.Id, r => r.RoomNumber);
+        List<MaintenanceTicketDto> list =  query.Select(t=>new MaintenanceTicketDto(t.Id,t.Title,t.Description,t.StaffId, names.GetValueOrDefault(t.StaffId, "Unknown"), t.ReportedId, names.GetValueOrDefault(t.ReportedId, "Unknown"),t.RoomId, roomNumbers.GetValueOrDefault(t.RoomId, "Unknown"),t.PropertyId,t.Priority, t.Status, t.ResolvedAt)).ToList();
         return new PaginatedResult<MaintenanceTicketDto>(list, totalCount, pageSize,currentPage);
     }
 
@@ -110,7 +119,11 @@ public class MaintenanceTicketService:IMaintenanceTicketService
         var idsReported = query.Select(t => t.ReportedId).ToList();
         var ids = idsStaff.Concat(idsReported);
         var names = await _identityService.GetUserNamesByIds(ids);
-        List<MaintenanceTicketDto> list =  query.Select(t=>new MaintenanceTicketDto(t.Id,t.Title,t.Description,t.StaffId, names.GetValueOrDefault(t.StaffId, "Unknown"),t.ReportedId,names.GetValueOrDefault(t.ReportedId, "Unknown"), t.RoomId, t.PropertyId,t.Priority, t.Status, t.ResolvedAt)).ToList();
+        var roomIds = query.Select(m => m.RoomId).Distinct().ToList();
+        var rooms = await _roomRepository.GetByCondition(r=>roomIds.Contains(r.Id));
+        var roomNumbers = rooms.ToDictionary(r => r.Id, r => r.RoomNumber);
+        
+        List<MaintenanceTicketDto> list =  query.Select(t=>new MaintenanceTicketDto(t.Id,t.Title,t.Description,t.StaffId, names.GetValueOrDefault(t.StaffId, "Unknown"),t.ReportedId,names.GetValueOrDefault(t.ReportedId, "Unknown"), t.RoomId, roomNumbers.GetValueOrDefault(t.RoomId, "Unknown"),t.PropertyId,t.Priority, t.Status, t.ResolvedAt)).ToList();
         return new PaginatedResult<MaintenanceTicketDto>(list, totalCount, pageSize,currentPage);
     }
 
@@ -119,8 +132,9 @@ public class MaintenanceTicketService:IMaintenanceTicketService
         MaintenanceTicket response = await _repository.GetById(id);
         var ids = new List<Guid> { response.StaffId, response.ReportedId};
         var names = await _identityService.GetUserNamesByIds(ids);
+        var room = await _roomRepository.GetById(response.RoomId);
         MaintenanceTicketDto ticket = new MaintenanceTicketDto(response.Id, response.Title, response.Description,
-            response.StaffId, names.GetValueOrDefault(response.StaffId, "Unknown"), response.ReportedId,names.GetValueOrDefault(response.ReportedId, "Unknown"),response.RoomId,response.PropertyId,response.Priority,response.Status,response.ResolvedAt);
+            response.StaffId, names.GetValueOrDefault(response.StaffId, "Unknown"), response.ReportedId,names.GetValueOrDefault(response.ReportedId, "Unknown"),response.RoomId,room.RoomNumber,response.PropertyId,response.Priority,response.Status,response.ResolvedAt);
         return ticket;
     }
 
