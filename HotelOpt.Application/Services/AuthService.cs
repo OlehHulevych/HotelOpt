@@ -41,6 +41,7 @@ public class AuthService:IAuthService
     public async Task<AuthResponseDto> RefreshAsync(string refreshToken)
     {
         var user = await _identityService.GetUserByRefreshTokenAsync(refreshToken);
+        if (user == null) throw new Exception("The user is not found");
         UserDto userDto = new UserDto(user.FirstName,user.SecondName,user.Email, user.Id,user.TenantId,user.Role, user.PropertyId);
         var newRefreshToken = await _identityService.GenerateAndSaveRefreshTokenAsync(user.Id);
         var newAccessToken =  _tokenService.CreateToken(user.TenantId, user.Id, user.FirstName + " "+user.SecondName, user.Email,user.Role,user.PropertyId);
@@ -50,5 +51,12 @@ public class AuthService:IAuthService
     public async Task RevokeRefreshTokenAsync(Guid userId)
     {
         await _identityService.RevokeRefreshTokenAsync(userId);
+    }
+
+    public async Task<UserDto> Authenticate(Guid id)
+    {
+        var user = await _identityService.GetUserById(id);
+        return user;
+        
     }
 }

@@ -103,4 +103,12 @@ public class IdentityService:IIdentityService
             .ToList();
         return usersList;
     }
+
+    public async Task<UserDto> GetUserById(Guid userId)
+    {
+        var user = await _userManager.FindByIdAsync(userId.ToString());
+        if (user == null || user.Email == null) throw new Exception($"The user {userId} is not found");
+        var userDto = new UserDto(user.FirstName, user.LastName,user.Email,user.Id, user.TenantId, user.Role,user.PropertyId);
+        return userDto;
+    }
 }

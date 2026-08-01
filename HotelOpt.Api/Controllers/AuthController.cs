@@ -1,7 +1,6 @@
 ﻿using System.Security.Claims;
 using HotelOpt.Application.Interfaces;
 using HotelOpt.Application.DTOs;
-using HotelOpt.Application.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -34,7 +33,7 @@ public class AuthController:ControllerBase
     [HttpPost("login")]
     public async Task<IActionResult> LoginUser([FromBody] LoginDto data)
     {
-        AuthResponseDto? responseDto = await _authService.Login(data);
+        AuthResponseDto responseDto = await _authService.Login(data);
         return Ok(new { message = "The user is log in successfully ", responseDto });
 
     }
@@ -67,6 +66,15 @@ public class AuthController:ControllerBase
         }
 
         return Ok(new {message = "Your avatar was uploaded"});
+    }
+
+    [Authorize]
+    [HttpGet("me")]
+    public async Task<IActionResult> Me()
+    {
+        var id = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+        var user = await _authService.Authenticate(id);
+        return Ok(user);
     }
     
     
