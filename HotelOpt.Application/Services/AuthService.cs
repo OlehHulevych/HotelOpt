@@ -30,7 +30,7 @@ public class AuthService:IAuthService
         var validationResult = await _loginValidator.ValidateAsync(dto);
         if (!validationResult.IsValid) throw new ValidationException(validationResult.Errors);
         var user = await _identityService.FindByEmail(dto.Email);
-        UserDto userDto = new UserDto(user.FirstName,user.SecondName,user.Email, user.Id,user.TenantId,user.Role,user.PropertyId);
+        UserDto userDto = new UserDto(user.FirstName,user.SecondName,user.Email, user.AvatarUrl,user.Id,user.TenantId,user.Role,user.PropertyId);
         bool checkPassword = await _identityService.CheckPassword(user.Id, dto.Password);
         if (!checkPassword) throw new Exception("Invalid password");
         var refreshToken = await _identityService.GenerateAndSaveRefreshTokenAsync(user.Id);
@@ -42,7 +42,7 @@ public class AuthService:IAuthService
     {
         var user = await _identityService.GetUserByRefreshTokenAsync(refreshToken);
         if (user == null) throw new Exception("The user is not found");
-        UserDto userDto = new UserDto(user.FirstName,user.SecondName,user.Email, user.Id,user.TenantId,user.Role, user.PropertyId);
+        UserDto userDto = new UserDto(user.FirstName,user.SecondName,user.Email, user.AvatarUrl,user.Id,user.TenantId,user.Role, user.PropertyId);
         var newRefreshToken = await _identityService.GenerateAndSaveRefreshTokenAsync(user.Id);
         var newAccessToken =  _tokenService.CreateToken(user.TenantId, user.Id, user.FirstName + " "+user.SecondName, user.Email,user.Role,user.PropertyId);
         return new AuthResponseDto(newAccessToken, newRefreshToken, userDto);
