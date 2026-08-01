@@ -41,6 +41,7 @@ public class MaintenanceTicket:BaseEntity
         ReportedId = reportedId;
         Priority = priority;
         RoomId = roomId;
+        Status = TicketStatus.Open;
         PropertyId = propertyId;
         TenantId = tenantId;
     }
