@@ -6,10 +6,12 @@ namespace HotelOpt.Hubs;
 public class NotificationSender:INotificationSender
 {
     private readonly IHubContext<NotificationHub> _hubContext;
+   
 
-    public NotificationSender(IHubContext<NotificationHub> hubContext)
+    public NotificationSender(IHubContext<NotificationHub> hubContext, IIdentityService identityService)
     {
         _hubContext = hubContext;
+        
     }
     
     public async Task SendToTenantAsync(Guid tenantId, string alertType, string message)

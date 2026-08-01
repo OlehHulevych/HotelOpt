@@ -1,3 +1,3 @@
 ﻿namespace HotelOpt.Application.DTOs;
 
-public record MessageDto(Guid Id, string Content, Guid SenderId, Guid PropertyId, DateTimeOffset CreatedAt);
+public record MessageDto(Guid Id, string Content, Guid SenderId, string SenderName, Guid PropertyId, DateTimeOffset CreatedAt);
