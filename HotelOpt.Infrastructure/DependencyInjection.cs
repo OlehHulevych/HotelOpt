@@ -21,6 +21,7 @@ namespace HotelOpt.Infrastructure;
  {
      public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
      {
+         var deeplKey = configuration["DeepL:Key"];
          StripeConfiguration.ApiKey = configuration["Stripe:SecretKey"];
          services.AddDbContext<AppDbContext>(options => options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
          services.AddScoped<ICurrentTenantService, CurrentTenantService>();
@@ -37,6 +38,7 @@ namespace HotelOpt.Infrastructure;
          services.AddScoped<IStripeService, StripeService>();
          services.AddScoped<IEmailService, EmailService>();
          services.AddScoped<IExportService, ExportService>();
+         services.AddScoped<ITranslationService, DeepLTranslationService>();
          services.AddHttpClient("gemini");
          services.AddHangfire(config =>
              config.UsePostgreSqlStorage(configuration.GetConnectionString("DefaultConnection")));
