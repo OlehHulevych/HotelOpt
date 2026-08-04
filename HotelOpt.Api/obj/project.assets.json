@@ -127,6 +127,18 @@
           }
         }
       },
+      "DeepL.net/1.21.0": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.Extensions.Http.Polly": "5.0.1"
+        },
+        "compile": {
+          "lib/net5.0/DeepL.net.dll": {}
+        },
+        "runtime": {
+          "lib/net5.0/DeepL.net.dll": {}
+        }
+      },
       "FluentValidation/11.9.2": {
         "type": "package",
         "compile": {
@@ -817,6 +829,23 @@
           "buildTransitive/net8.0/_._": {}
         }
       },
+      "Microsoft.Extensions.Http.Polly/5.0.1": {
+        "type": "package",
+        "dependencies": {
+          "Polly": "7.1.0",
+          "Polly.Extensions.Http": "3.0.0"
+        },
+        "compile": {
+          "lib/netstandard2.0/Microsoft.Extensions.Http.Polly.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/netstandard2.0/Microsoft.Extensions.Http.Polly.dll": {
+            "related": ".xml"
+          }
+        }
+      },
       "Microsoft.Identity.Client/4.83.1": {
         "type": "package",
         "dependencies": {
@@ -1055,6 +1084,35 @@
         },
         "runtime": {
           "lib/net9.0/Pipelines.Sockets.Unofficial.dll": {
+            "related": ".xml"
+          }
+        }
+      },
+      "Polly/7.1.0": {
+        "type": "package",
+        "compile": {
+          "lib/netstandard2.0/Polly.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/netstandard2.0/Polly.dll": {
+            "related": ".xml"
+          }
+        }
+      },
+      "Polly.Extensions.Http/3.0.0": {
+        "type": "package",
+        "dependencies": {
+          "Polly": "7.1.0"
+        },
+        "compile": {
+          "lib/netstandard2.0/Polly.Extensions.Http.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/netstandard2.0/Polly.Extensions.Http.dll": {
             "related": ".xml"
           }
         }
@@ -1434,6 +1492,7 @@
         "dependencies": {
           "Azure.Storage.Blobs": "12.29.1",
           "CsvHelper": "33.1.0",
+          "DeepL.net": "1.21.0",
           "Hangfire.AspNetCore": "1.8.23",
           "Hangfire.Core": "1.8.23",
           "Hangfire.PostgreSql": "1.21.1",
@@ -1641,6 +1700,21 @@
         "lib/netstandard2.0/Dapper.AOT.dll",
         "lib/netstandard2.0/Dapper.AOT.xml",
         "readme.md"
+      ]
+    },
+    "DeepL.net/1.21.0": {
+      "sha512": "FZCR2UQ5XEgcI8SANyxFWvyKtN3b1Sg11KOVv9P7/uwHCbHzuFCBAvGNRadc/0qjzKn7LK8YaTmjygfh1xV7aA==",
+      "type": "package",
+      "path": "deepl.net/1.21.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "README.md",
+        "deepl.net.1.21.0.nupkg.sha512",
+        "deepl.net.nuspec",
+        "icon.png",
+        "lib/net5.0/DeepL.net.dll",
+        "lib/netstandard2.0/DeepL.net.dll"
       ]
     },
     "FluentValidation/11.9.2": {
@@ -3191,6 +3265,20 @@
         "useSharedDesignerContext.txt"
       ]
     },
+    "Microsoft.Extensions.Http.Polly/5.0.1": {
+      "sha512": "Tzf+x8HVDhri9dkIGCGOP5RVjgXnTZuBcwZHr0sW6KAtVGPDU0xEDXPDpoW5vwq/K12dMI75vuapUtMw0d/pIw==",
+      "type": "package",
+      "path": "microsoft.extensions.http.polly/5.0.1",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "Icon.png",
+        "lib/netstandard2.0/Microsoft.Extensions.Http.Polly.dll",
+        "lib/netstandard2.0/Microsoft.Extensions.Http.Polly.xml",
+        "microsoft.extensions.http.polly.5.0.1.nupkg.sha512",
+        "microsoft.extensions.http.polly.nuspec"
+      ]
+    },
     "Microsoft.Identity.Client/4.83.1": {
       "sha512": "jOLIrZ3cynoqHLLO1cXplFFabrhrMEYs/EuKHvmCyrOm1axqiVFT6nCSnHxk7w5+d2BeQfCdM12Yf/0X7OeS1g==",
       "type": "package",
@@ -3552,6 +3640,36 @@
         "lib/netstandard2.1/Pipelines.Sockets.Unofficial.xml",
         "pipelines.sockets.unofficial.2.2.16.nupkg.sha512",
         "pipelines.sockets.unofficial.nuspec"
+      ]
+    },
+    "Polly/7.1.0": {
+      "sha512": "mpQsvlEn4ipgICh5CGyVLPV93RFVzOrBG7wPZfzY8gExh7XgWQn0GCDY9nudbUEJ12UiGPP9i4+CohghBvzhmg==",
+      "type": "package",
+      "path": "polly/7.1.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "lib/netstandard1.1/Polly.dll",
+        "lib/netstandard1.1/Polly.xml",
+        "lib/netstandard2.0/Polly.dll",
+        "lib/netstandard2.0/Polly.xml",
+        "polly.7.1.0.nupkg.sha512",
+        "polly.nuspec"
+      ]
+    },
+    "Polly.Extensions.Http/3.0.0": {
+      "sha512": "drrG+hB3pYFY7w1c3BD+lSGYvH2oIclH8GRSehgfyP5kjnFnHKQuuBhuHLv+PWyFuaTDyk/vfRpnxOzd11+J8g==",
+      "type": "package",
+      "path": "polly.extensions.http/3.0.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "lib/netstandard1.1/Polly.Extensions.Http.dll",
+        "lib/netstandard1.1/Polly.Extensions.Http.xml",
+        "lib/netstandard2.0/Polly.Extensions.Http.dll",
+        "lib/netstandard2.0/Polly.Extensions.Http.xml",
+        "polly.extensions.http.3.0.0.nupkg.sha512",
+        "polly.extensions.http.nuspec"
       ]
     },
     "Scalar.AspNetCore/2.16.3": {
