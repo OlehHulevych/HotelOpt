@@ -46,4 +46,22 @@ public class WebHookController:ControllerBase
             return StatusCode(500, ex.Message);
         }
     }
+
+    [Authorize]
+    [HttpGet("status")]
+    public async Task<IActionResult> GetStatusAsync()
+    {
+        var result = await _service.GetStatusAsync();
+        return Ok(new { message = "Subscription Status", result });
+    }
+
+    [Authorize(Roles="Owner")]
+    [HttpDelete]
+    public async Task<IActionResult> Cancel()
+    {
+         await _service.CancelAsync();
+         return Ok(new {message="Subscription is cancelled"});
+    }
+    
+    
 }

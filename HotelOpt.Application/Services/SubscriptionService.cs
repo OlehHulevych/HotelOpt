@@ -1,7 +1,8 @@
-﻿using HotelOpt.Application.Interfaces;
+﻿using HotelOpt.Application.DTOs;
+using HotelOpt.Application.Exceptions;
+using HotelOpt.Application.Interfaces;
 using HotelOpt.Domain.Entities;
 using HotelOpt.Domain.Enums;
-using Microsoft.Extensions.Options;
 
 namespace HotelOpt.Application.Services;
 
@@ -10,6 +11,7 @@ public class SubscriptionService:ISubscriptionService
     private readonly IStripeService _stripeService;
     private readonly IRepository<Tenant> _repository;
     private readonly ICurrentTenantService _currentTenantService;
+    
 
      
     
@@ -29,9 +31,9 @@ public class SubscriptionService:ISubscriptionService
         await _repository.Update(tenant);
     }
 
-    public async Task CancelAsync(Guid tenantId)
+    public async Task CancelAsync()
     {
-        Tenant tenant = await _repository.GetById(tenantId);
+        Tenant tenant = await _repository.GetById(_currentTenantService.TenantId);
         if (tenant.StripeSubscriptionId == null) throw new Exception("No active subscription");
         await _stripeService.CancelSubscriptionAsync(tenant.StripeSubscriptionId);
         tenant.UpdateSubscriptionStatus(SubscriptionStatus.Cancelled);
@@ -59,5 +61,13 @@ public class SubscriptionService:ISubscriptionService
         }
 
         await _repository.Update(tenant);
+    }
+
+    public async Task<TenantSubscriptionDto> GetStatusAsync()
+    {
+        var tenant = await _repository.GetById(_currentTenantService.TenantId);
+        if (tenant == null) throw new NotFoundException($"Tenant {_currentTenantService.TenantId} is not existing");
+        return new TenantSubscriptionDto(tenant.SubscriptionPlan.ToString(), tenant.SubscriptionStatus.ToString(),
+            tenant.TrialEndsAt);
     }
 }
