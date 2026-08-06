@@ -1,5 +1,7 @@
-﻿using System.Linq.Expressions;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Linq.Expressions;
 using HotelOpt.Application.DTOs;
+using HotelOpt.Application.Exceptions;
 using HotelOpt.Application.Interfaces;
 using HotelOpt.Application.Pagination;
 using HotelOpt.Domain.Entities;
@@ -26,11 +28,14 @@ public class BookingService:IBookingService
     public async Task<BookingResponseDto> CreateAsync(CreateBookingDto dto)
     {
         Guest leaderGuest = await _guestRepository.GetById(dto.PrimaryGuestId);
+        if (leaderGuest == null) throw new NotFoundException("The leader guest is not found");
+        var room = await _roomRepository.GetById(dto.RoomId);
+        if (room == null) throw new NotFoundException("The room is not found");
         var occupiedBooking = await _repository.GetByCondition(b=>b.RoomId==dto.RoomId && b.PropertyId == dto.PropertyId && dto.CheckInDate < b.CheckOutDate && dto.CheckOutDate > b.CheckInDate && b.Status!=BookingStatus.Cancelled && b.Status!=BookingStatus.CheckedOut);
-        if (occupiedBooking.Any()) throw new Exception("This time is occupied");
+        if (occupiedBooking.Any()) throw new ValidationException("This time is occupied");
         Booking booking = new Booking(dto.RoomId,dto.PropertyId,_currentTenantService.TenantId,dto.CheckInDate, dto.CheckOutDate, leaderGuest);
         await _repository.Add(booking);
-        return new BookingResponseDto(booking.Id,booking.RoomId,booking.Room.RoomNumber,booking.PropertyId,booking.CheckInDate,booking.CheckOutDate,booking.Status.ToString(), booking.Guests.Select(g=>$"{g.FirstName} {g.LastName}").ToList());
+        return new BookingResponseDto(booking.Id,room.Id,room.RoomNumber,booking.PropertyId,booking.CheckInDate,booking.CheckOutDate,booking.Status.ToString(), booking.Guests.Select(g=>$"{g.FirstName} {g.LastName}").ToList());
 
     }
 
