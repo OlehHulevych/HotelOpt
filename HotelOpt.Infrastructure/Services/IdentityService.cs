@@ -111,4 +111,27 @@ public class IdentityService:IIdentityService
         var userDto = new UserDto(user.FirstName, user.LastName,user.Email,user.AvatarUrl,user.Id, user.TenantId, user.Role,user.PropertyId);
         return userDto;
     }
+
+    public async Task UpdateRoleAsync(Guid userId, string role)
+    {
+        var user = await _userManager.FindByIdAsync(userId.ToString());
+        if (user == null || user.Email == null) throw new Exception($"The user {userId} is not found");
+        var currentRoles = await _userManager.GetRolesAsync(user);
+        await _userManager.RemoveFromRolesAsync(user, currentRoles);
+        var result = await _userManager.AddToRoleAsync(user, role);
+        if (!result.Succeeded) throw new Exception("Failed to update role");
+        
+    }
+    
+
+    public async Task BanUserAsync(Guid userId)
+    {
+        var user = await _userManager.FindByIdAsync(userId.ToString());
+        if (user == null || user.Email == null) throw new Exception($"The user {userId} is not found");
+        
+        user.LockoutEnabled = true;
+        user.LockoutEnd = DateTimeOffset.MaxValue;
+        var result = await _userManager.UpdateAsync(user);
+        if (!result.Succeeded) throw new Exception("Failed to ban user");
+    }
 }

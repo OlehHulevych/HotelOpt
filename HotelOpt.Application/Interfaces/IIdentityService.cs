@@ -17,4 +17,6 @@ public interface IIdentityService
     Task<string?> GetUserEmailAsync(Guid userId);
     Task<List<UserDto>> GetAllStaffAsync(Guid tenantId);
     Task<UserDto> GetUserById(Guid userId);
+    Task UpdateRoleAsync(Guid userId, string role);
+    Task BanUserAsync(Guid userId);
 }
