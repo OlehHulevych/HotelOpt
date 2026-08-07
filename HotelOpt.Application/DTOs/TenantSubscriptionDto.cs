@@ -1,3 +1,3 @@
 ﻿namespace HotelOpt.Application.DTOs;
 
-public record TenantSubscriptionDto(string Plan, string Status, DateTimeOffset TrialEndAt);
+public record TenantSubscriptionDto(string Plan, string Status, DateTimeOffset TrialEndsAt);
