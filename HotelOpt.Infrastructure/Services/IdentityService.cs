@@ -136,4 +136,13 @@ public class IdentityService:IIdentityService
         var result = await _userManager.UpdateAsync(user);
         if (!result.Succeeded) throw new Exception("Failed to ban user");
     }
+
+    public async Task UnBanUserAsync(Guid userId)
+    {
+        var user = await _userManager.FindByIdAsync(userId.ToString());
+        if (user == null || user.Email == null) throw new Exception($"The user {userId} is not found");
+        user.LockoutEnd = null;
+        var result = await _userManager.UpdateAsync(user);
+        if (!result.Succeeded) throw new Exception("Failed to ban user");
+    }
 }

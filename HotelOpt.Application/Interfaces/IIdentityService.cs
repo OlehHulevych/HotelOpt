@@ -19,4 +19,5 @@ public interface IIdentityService
     Task<UserDto> GetUserById(Guid userId);
     Task UpdateRoleAsync(Guid userId, string role);
     Task BanUserAsync(Guid userId);
+    Task UnBanUserAsync(Guid userId);
 }

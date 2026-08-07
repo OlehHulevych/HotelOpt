@@ -50,4 +50,17 @@ public class UsersController : ControllerBase
         await _identityService.BanUserAsync(id);
         return Ok(new { message = $"The user {id} was banned" });
     }
+    
+    [Authorize(Roles = "Owner")]
+    [HttpPatch("{id}/unban")]
+    public async Task<IActionResult> UnbanUser(Guid id)
+    {
+        var target = await _identityService.GetUserById(id);
+        if (target.TenantId != _tenantService.TenantId)
+            return Forbid();
+
+        await _identityService.UnBanUserAsync(id);
+        return Ok(new { message = $"The user {id} was unbanned" });
+    }
+
 }
