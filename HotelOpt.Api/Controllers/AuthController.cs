@@ -20,7 +20,7 @@ public class AuthController:ControllerBase
         _storageService = storageService;
         _identityService = identityService;
     }
-
+        
     [Authorize(Roles="Owner")]
     [HttpPost("register")]
     public async Task<IActionResult> RegisterUser([FromBody] RegistrationDto data)
