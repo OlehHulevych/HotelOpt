@@ -21,7 +21,7 @@ public class AuthController:ControllerBase
         _identityService = identityService;
     }
 
-    [Authorize("Owner")]
+    [Authorize(Roles="Owner")]
     [HttpPost("register")]
     public async Task<IActionResult> RegisterUser([FromBody] RegistrationDto data)
     {
