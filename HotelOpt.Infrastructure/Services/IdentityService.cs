@@ -32,7 +32,7 @@ public class IdentityService:IIdentityService
     {
         var user = await _userManager.FindByEmailAsync(email);
         if (user == null || user.Email == null  ) throw new NotFoundException("User is not found");
-        UserDto newDto = new UserDto(user.FirstName, user.LastName, user.Email,user.AvatarUrl,user.Id, user.TenantId, user.Role, user.PropertyId);
+        UserDto newDto = new UserDto(user.FirstName, user.LastName, user.Email,user.AvatarUrl,user.Id, user.TenantId, user.Role, user.LockoutEnabled,user.PropertyId);
         return newDto;
     }
 
@@ -77,7 +77,7 @@ public class IdentityService:IIdentityService
         User? user = await _userManager.Users.FirstOrDefaultAsync(u => u.RefreshToken == refreshToken);
         if (user == null || user.Email == null) throw new UnauthorizedException("Invalid refresh token");
         if (user.RefreshTokenExpiresAt < DateTimeOffset.UtcNow) throw new UnauthorizedException("Refresh token has expired");
-        return new UserDto(user.FirstName, user.LastName, user.Email, user.AvatarUrl,user.Id, user.TenantId, user.Role, user.PropertyId);
+        return new UserDto(user.FirstName, user.LastName, user.Email, user.AvatarUrl,user.Id, user.TenantId, user.Role, user.LockoutEnabled,user.PropertyId);
     }
 
     public async Task RevokeRefreshTokenAsync(Guid userId)
@@ -99,7 +99,7 @@ public class IdentityService:IIdentityService
     {
         var users = await _userManager.Users.Where(u => u.TenantId == tenantId).ToListAsync();
         var usersList = users
-            .Select(u => new UserDto(u.FirstName, u.LastName, u.Email, u.AvatarUrl,u.Id, u.TenantId, u.Role, u.PropertyId))
+            .Select(u => new UserDto(u.FirstName, u.LastName, u.Email, u.AvatarUrl,u.Id, u.TenantId, u.Role, u.LockoutEnabled,u.PropertyId))
             .ToList();
         return usersList;
     }
@@ -108,7 +108,7 @@ public class IdentityService:IIdentityService
     {
         var user = await _userManager.FindByIdAsync(userId.ToString());
         if (user == null || user.Email == null) throw new Exception($"The user {userId} is not found");
-        var userDto = new UserDto(user.FirstName, user.LastName,user.Email,user.AvatarUrl,user.Id, user.TenantId, user.Role,user.PropertyId);
+        var userDto = new UserDto(user.FirstName, user.LastName,user.Email,user.AvatarUrl,user.Id, user.TenantId, user.Role,user.LockoutEnabled,user.PropertyId);
         return userDto;
     }
 
