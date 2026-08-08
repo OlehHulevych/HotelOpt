@@ -53,7 +53,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
 });
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAll", p=>p.WithOrigins("http://localhost:5173").AllowAnyMethod().AllowAnyHeader().AllowCredentials());
+    options.AddPolicy("AllowAll", p=>p.WithOrigins("http://localhost:5173", "https://hotleopt-web-production.up.railway.app").AllowAnyMethod().AllowAnyHeader().AllowCredentials());
 });
 var app = builder.Build();
 var forwardedOptions = new ForwardedHeadersOptions
